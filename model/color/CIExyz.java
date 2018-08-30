@@ -5,7 +5,9 @@ package model.color;
 import java.util.Vector;
 import java.util.Arrays;
 import model.IllegalColorException;
-public class CIExyz implements Color{
+import model.Factory;
+public class CIExyz implements Color
+{
 
   //instance variables
   private double x;
@@ -13,6 +15,7 @@ public class CIExyz implements Color{
   private double z;
 
   //static variables
+  static final Factory<CIExyz> = new Factory<CIExyz>("CIExyz");
   static final double lower_limit_X=0;
   static final double upper_limit_X=0.95047;
   static final double lower_limit_Y=0;
@@ -23,7 +26,8 @@ public class CIExyz implements Color{
   static final String[] implementedMethods=new String[]{"negate","mix"};
 
   //Costructor
-  public CIExyz(double t_x, double t_y, double t_z) throws IllegalColorException{
+  public CIExyz(double t_x, double t_y, double t_z) throws IllegalColorException
+  {
     if(t_x<lower_limit_X || t_x>upper_limit_X ||
     t_y<lower_limit_Y || t_y>upper_limit_Y ||
     t_z<lower_limit_Z || t_z>upper_limit_Z)
@@ -52,6 +56,11 @@ public class CIExyz implements Color{
     x=c.x;
     y=c.y;
     z=c.z;
+  }
+
+  public static Color getNewIstance()
+  {
+    return new CIExyz();
   }
 
   /**
@@ -93,7 +102,7 @@ public class CIExyz implements Color{
   * @brief negate
   * @return Color pointer with a new color with the complementar values
 */
-  public CIExyz negate() throws IllegalColorException
+  public Color negate() throws IllegalColorException
   {
     double nx=upper_limit_X-x;
     double ny=upper_limit_Y-y;
@@ -105,7 +114,7 @@ public class CIExyz implements Color{
   * @param c
   * @return Color pointer with a new Object color mixed
   */
-  public CIExyz mix(Color c) throws IllegalColorException
+  public Color mix(Color c) throws IllegalColorException
   {
     CIExyz b = new CIExyz(c);
     double m_x= (b.x+this.x)/2;
@@ -128,7 +137,8 @@ public class CIExyz implements Color{
   * @return Vector<double> with the x y z component of the color in CIE XYZ
   */
 
-  public Vector<Double> getComponents() {
+  public Vector<Double> getComponents()
+  {
     Vector<Double> to_return=new Vector<Double>(3);
     to_return.addElement(new Double(x));
     to_return.addElement(new Double(y));
@@ -145,7 +155,8 @@ public class CIExyz implements Color{
   * @brief availableOperations
   * @return all the operation that has been implemented
   */
-  public Vector<String> availableOperations() {
+  public Vector<String> availableOperations()
+  {
     Vector<String> to_return = new Vector<String>(Arrays.asList(implementedMethods));
     return to_return;
   }
@@ -154,7 +165,8 @@ public class CIExyz implements Color{
   * @brief operator /
   * @throws IllegalColorException("operation not available");
   */
-  public CIExyz division(int div) throws IllegalColorException {
+  public CIExyz division(int div) throws IllegalColorException
+  {
     throw new IllegalColorException("operation not available");
   }
 
