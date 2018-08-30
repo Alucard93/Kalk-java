@@ -1,4 +1,4 @@
-
+package model;
 public class IllegalColorException extends Exception
 {
   private String what;
@@ -6,6 +6,6 @@ public class IllegalColorException extends Exception
     this.what=what;
   }
   public String what(){
-    return what
+    return what;
   }
 }
