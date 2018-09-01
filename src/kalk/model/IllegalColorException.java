@@ -1,7 +1,11 @@
 package kalk.model;
 public class IllegalColorException extends Exception
 {
-  private String what;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+private String what;
   public IllegalColorException(String what){
     this.what=what;
   }

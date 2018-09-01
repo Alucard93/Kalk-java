@@ -3,28 +3,49 @@ package kalk.model.factory;
 import java.util.Map;
 import java.util.Vector;
 import java.util.HashMap;
-import java.util.Arrays;
-import model.IllegalColorException;
-import model.factory.GenericFactory;
-import model.color.Color;
+import kalk.model.IllegalColorException;
+import kalk.model.color.CIExyz;
+import kalk.model.color.Color;
+import kalk.model.color.RGB;
 
+/**
+ * @author gian
+ *
+ */
 public class ColorFactory
 {
-  private static Map<String, GenericFactory> allColorFactories = new HashMap<String,GenericFactory>();
+  private static Map<String, Color> allColorFactories = new HashMap<String,Color>();
+  
+  public ColorFactory() {
+		CIExyz ciexyz = new CIExyz();
+		RGB rgb = new RGB();
+	}
 
-  public static void addColorFactory(String name,GenericFactory factory)
+  public static boolean addColorFactory(String name,Color color)
   {
-    allColorFactories.putIfAbsent(name,factory);
+    allColorFactories.putIfAbsent(name,color);
+    return true;
   }
 
-  public static Vector<String> getAllColorTypes()
+  public static Vector<String> availableOperations()
   {
-    return new Vector<String>(allColorFactories.keySet());
+    Vector<String> toReturn = new Vector<String>();
+    for(int i=0; i<3;i++)
+    {
+      toReturn.add(Color.allOpts[i][0]);
+    }
+      return toReturn;
   }
 
-  public static Color getNewColor(String key)
+  public static Color Execution(Color left, int operation) throws IllegalColorException
   {
-    return allColorFactories.get(key).create();
+    Color result=null;
+    switch(operation)
+    {
+      case 0: result=left.negate();
+      break;
+    }
+    return result;
   }
 
   public static Color Execution(Color left, int operation, Color right) throws IllegalColorException
@@ -39,16 +60,6 @@ public class ColorFactory
     return result;
   }
 
-  public static Color Execution(Color left, int operation) throws IllegalColorException
-  {
-    Color result=null;
-    switch(operation)
-    {
-      case 0: result=left.negate();
-      break;
-    }
-    return result;
-  }
   public static Color Execution(Color left, int operation, int right) throws IllegalColorException
   {
     Color result=null;
@@ -59,21 +70,19 @@ public class ColorFactory
     }
     return result;
   }
-
-  public static Vector<String> availableOperations()
+  public static Vector<String> getAllColorTypes()
   {
-    Vector<String> toReturn = new Vector<String>();
-    for(int i=0; i<3;i++)
-    {
-      toReturn.add(Color.allOpts[i][0]);
-    }
-      return toReturn;
+    return new Vector<String>(allColorFactories.keySet());
+  }
+
+  public static Color getNewColor(String key)
+  {
+    return allColorFactories.get(key).getNewIstance();
   }
 
   public static Vector<String> permittedOperations(String type)
   {
-      Color toTest = getNewColor(type);
-      return toTest.availableOperations();
+	  return allColorFactories.get(type).availableOperations();
   }
 
   public static Vector<String> typeByOperation(int operation)
@@ -90,7 +99,8 @@ public class ColorFactory
             else
                 toReturn.add(Color.allOpts[operation][i]);
       }
-    }else
+    }
+    else
     {
       toReturn.addAll(allColor);
     }

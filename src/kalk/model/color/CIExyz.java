@@ -15,7 +15,8 @@ public class CIExyz implements Color
   private double z;
 
   //static variables
-  static final Factory<CIExyz> = new Factory<CIExyz>("CIExyz");
+  static final CIExyz local = new CIExyz();
+  static final boolean factory = ColorFactory.addColorFactory("CIExyz", local);
   static final double lower_limit_X=0;
   static final double upper_limit_X=0.95047;
   static final double lower_limit_Y=0;
@@ -58,7 +59,7 @@ public class CIExyz implements Color
     z=c.z;
   }
 
-  public static Color getNewIstance()
+  public Color getNewIstance()
   {
     return new CIExyz();
   }
