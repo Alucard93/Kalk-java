@@ -13,7 +13,6 @@ import kalk.model.IllegalColorException;
  *
  */
 public class ColorModel implements Model {
-	private final ColorFactory factory = new ColorFactory();
 	private final ColorModel old;
 	private Color l_color;
 	private Color r_color;
@@ -22,13 +21,11 @@ public class ColorModel implements Model {
 	private String r_type;
 	private int alternative_right;
 	public Vector<String> opts;
-	private int op;
-	
-	public ColorModel() {
-		old=null;
-	}
+	private int op = -1;
 	
 	public ColorModel(ColorModel old) {
+		ColorFactory.setFactoryReady();
+		opts = ColorFactory.availableOperations();
 		this.old=old;
 	}
 
@@ -37,7 +34,6 @@ public class ColorModel implements Model {
 	 */
 	@Override
 	public Vector<String> availableOperations() {
-		opts = ColorFactory.availableOperations();
 		return opts;
 	}
 
@@ -48,14 +44,20 @@ public class ColorModel implements Model {
 	public Vector<String> allAvailableTypes() {
 		return ColorFactory.getAllColorTypes();
 	}
+	
+	public Vector<String> rightTypesAvailables(){
+		return ColorFactory.typeByOperation(op);
+	}
 
 	/* (non-Javadoc)
 	 * @see kalk.model.Model#setLeftType(java.lang.String)
 	 */
 	@Override
-	public void setLeftType(String type) {
+	public int setLeftType(String type) {
 		l_type=type;
 		l_color = ColorFactory.getNewColor(type);
+		opts = ColorFactory.permittedOperations(type);
+		return l_color.getNumberOfComponets();
 	}
 
 	/* (non-Javadoc)
@@ -72,10 +74,14 @@ public class ColorModel implements Model {
 	 * @see kalk.model.Model#setRightType(java.lang.String)
 	 */
 	@Override
-	public void setRightType(String type) {
+	public int setRightType(String type) {
 		r_type= type;
-		if(!type.equals("int"))
+		if(!type.equals("int")) 
+		{
 			r_color = ColorFactory.getNewColor(type);
+			return r_color.getNumberOfComponets();
+		}
+		return 1;
 
 	}
 
@@ -131,8 +137,7 @@ public class ColorModel implements Model {
 	 */
 	@Override
 	public void getResult() {
-		// Vector<String> Result
-
+		System.out.println("result");
 	}
 
 	/* (non-Javadoc)
@@ -147,7 +152,7 @@ public class ColorModel implements Model {
 	private Vector<Double> str2double(Vector<String> values){
 		Vector<Double> toReturn = new Vector<Double>();
 		for(String value:values) {
-			toReturn.add(new Double(value));
+			toReturn.add((double)Double.valueOf(value));
 		}
 		return toReturn;
 	}

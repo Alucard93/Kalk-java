@@ -38,6 +38,7 @@ public class RGB extends CIExyz
 
 	public RGB()
 	{
+		super();
 		sRGB[0]=0;
 		sRGB[1]=0;
 		sRGB[2]=0;
@@ -51,6 +52,7 @@ public class RGB extends CIExyz
 
 	public RGB(RGB c) throws IllegalColorException
 	{
+		super(c);
 		setComponents(c.getComponents());
 	}
 

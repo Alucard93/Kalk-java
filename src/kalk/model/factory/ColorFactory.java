@@ -16,7 +16,7 @@ public class ColorFactory
 {
   private static Map<String, Color> allColorFactories = new HashMap<String,Color>();
   
-  public ColorFactory() {
+  public static void setFactoryReady() {
 		CIExyz ciexyz = new CIExyz();
 		RGB rgb = new RGB();
 	}
@@ -70,6 +70,7 @@ public class ColorFactory
     }
     return result;
   }
+  
   public static Vector<String> getAllColorTypes()
   {
     return new Vector<String>(allColorFactories.keySet());
