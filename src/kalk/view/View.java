@@ -50,6 +50,8 @@ public interface View {
 	 */
 	public String getOperation ();
 	
+	
+	
 	/**
 	 * runs the view
 	 */

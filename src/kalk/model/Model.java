@@ -2,6 +2,7 @@ package kalk.model;
 import java.util.Vector;
 public interface Model
 {
+
   Vector<String> availableOperations();
   Vector<String> allAvailableTypes();
   void setLeftType(String type);
