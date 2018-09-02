@@ -1,9 +1,20 @@
 /**
-*@author Giuseppe Vito Bitetti
+* @author Giuseppe Vito Bitetti
+* @date 20/7/2018
+* @class HSL
+* @brief this class uses the as base class CIExyz
+* and stores a color in HSL rappresentation
 */
 
-import CIExyz;
-import IllegalColorException;
+package kalk.model.color;
+
+import java.util.Vector;
+import java.util.Arrays;
+import kalk.model.color.Color;
+import kalk.model.factory.ColorFactory;
+import kalk.model.IllegalColorException;
+import kalk.model.color.CIExyz;
+
 public class HSL extends CIExyz{
 
   //instance variables
@@ -12,43 +23,64 @@ public class HSL extends CIExyz{
   private Double lightness;
 
   //static variables
-  static final unsigned int upper_limit_sat_lig=360;
-  static final unsigned int lower_limit_sat_lig=0;
-  static final unsigned int upper_limit_hue=1;
-  static final unsigned int lower_limit_hue=0;
+  static final int upper_limit_sat_lig=360;
+  static final int lower_limit_sat_lig=0;
+  static final int upper_limit_hue=1;
+  static final int lower_limit_hue=0;
   static final int componets = 3;
 
   //Costructor
+  public HSL(){
+      hue=0.0;
+      saturation=0.0;
+      lightness=0.0;
+  }
+
   public HSL(Double h, Double s, Double l){
+    super(getCIE(h, s, l));
     hue=h;
     saturation=s;
     lightness=l;
-    super(getCIE(h, s, l));
   }
-  /*
+
   public HSL(Color from){
-    QVector<Double> xyz=this->CIExyz::getComponents();
-    Double t1=3.063219*xyz[0] -1.393326*xyz[1] -0.475801*xyz[2];
-    Double t2=-0.969245*xyz[0] +1.875968*xyz[1] +0.041555*xyz[2];
-    Double t3=0.067872*xyz[0] -0.228833*xyz[1] +1.069251*xyz[2];
-    Double max_v=max({t1, t2, t3});
-    Double min_v=min({t1, t2, t3});
+    super(from);
+    Vector<Double> xyz=super.getComponents();
+    Double t1=3.063219*xyz.elementAt(0) -1.393326*xyz.elementAt(1) -0.475801*xyz.elementAt(2);
+    Double t2=-0.969245*xyz.elementAt(0) +1.875968*xyz.elementAt(1) +0.041555*xyz.elementAt(2);
+    Double t3=0.067872*xyz.elementAt(0) -0.228833*xyz.elementAt(1) +1.069251*xyz.elementAt(2);
+    Double max_v;
+    Double min_v;
+
+    if(t1.compareTo(t2)<0)
+      max_v=t2;
+    else
+      max_v=t1;
+    if(max_v.compareTo(t3)<0)
+      max_v=t3;
+    if(t1.compareTo(t2)>0)
+      min_v=t2;
+    else
+      min_v=t1;
+    if(min_v.compareTo(t3)>0)
+      min_v=t3;
+
     lightness=(max_v+min_v)/2;
-    if(qFuzzyCompare(max_v, min_v)){
-        saturation=0;
-        hue=0;
+    if(max_v==min_v){
+        saturation=0.0;
+        hue=0.0;
     }else{
         Double delta_v=max_v-min_v;
-        if(lightness<=0.5)
+        if(lightness.compareTo(0.5)<=0)
             saturation=delta_v/(max_v+min_v);
         else
             saturation=delta_v/(2-max_v-min_v);
         Double t1c=(max_v-t1)/delta_v;
         Double t2c=(max_v-t2)/delta_v;
         Double t3c=(max_v-t3)/delta_v;
-        if(qFuzzyCompare(t1, max_v))
+        if(t1.compareTo(max_v)==0)
             hue=t3c-t2c;
-        else if(qFuzzyCompare(t2, max_v))
+        else if(t2.compareTo(max_v)==0)
             hue=2+t1c-t3c;
         else
             hue=4+t2c-t1c;
@@ -58,13 +90,13 @@ public class HSL extends CIExyz{
         if(hue<lower_limit_hue)
             hue+=upper_limit_hue;
     }
-    super(from);
-  }*/
+  }
+
   public HSL(HSL from){
+    super(from);
     hue=from.hue;
     saturation=from.saturation;
     lightness=from.lightness;
-    super(from);
   }
 
   /**
@@ -72,7 +104,7 @@ public class HSL extends CIExyz{
   * @return String that contains the meaning of the values contained in getComponents()
   */
   public String getRappresentation(){
-    return String("HSL");
+    return new String("HSL");
   }
 
   /**
@@ -99,7 +131,7 @@ public class HSL extends CIExyz{
   * @param l
   * @return Color pointer with a clone of *this
   */
-  public HSL getCIE(Double h, Double s, Double l){
+  public HSL getCIE(Double h, Double s, Double l) throws IllegalColorException{
     if((h>upper_limit_hue || s>upper_limit_sat_lig || l>upper_limit_sat_lig) ||
        (h<lower_limit_hue || s<lower_limit_sat_lig || l<lower_limit_sat_lig))
         throw IllegalColorException("il colore non rientra nei parametri");
@@ -113,7 +145,7 @@ public class HSL extends CIExyz{
         Double tx;
         Double ty;
         Double tz;
-        if(s==0)){
+        if(s==0){
            tx=0.430574 * l + 0.341550 * l + 0.178325 * l;
            ty=0.222015 * l + 0.706655 * l + 0.071330 * l;
            tz=0.020183 * l + 0.129553 * l + 0.939180 * l;
@@ -131,41 +163,41 @@ public class HSL extends CIExyz{
   * @return Vector<Double> with the h, s, l component of the color in CIE XYZ
   */
   public Vector<Double> getComponents(){
-    Vector<Double> to_return={hue, saturation, lightness};
-    return to_return;
-}
+    Double[] dsHSL = new Double[]{hue, saturation, lightness};
+		return new Vector<Double>(Arrays.asList(dsHSL));
+  }
 
   /**
   * @brief setComponents set the components inside the object
   * @param componets
   */
-  public void setComponents(Vector<Double> componets){
-    if((componets[0]>upper_limit_hue || componets[1]>upper_limit_sat_lig || componets[2]>upper_limit_sat_lig) ||
-       (componets[0]<lower_limit_hue || componets[1]<lower_limit_sat_lig || componets[2]<lower_limit_sat_lig))
+  public void setComponents(Vector<Double> componets) throws IllegalColorException{
+    if((componets.elementAt(0)>upper_limit_hue || componets.elementAt(1)>upper_limit_sat_lig || componets.elementAt(2)>upper_limit_sat_lig) ||
+       (componets.elementAt(0)<lower_limit_hue || componets.elementAt(1)<lower_limit_sat_lig || componets.elementAt(2)<lower_limit_sat_lig))
         throw IllegalColorException("il colore non rientra nei parametri");
     else{
         Double t2;
-        if(componets[2]<=0.5)
-            t2=componets[2]+(componets[2]*componets[1]);
+        if(componets.elementAt(2)<=0.5)
+            t2=componets.elementAt(2)+(componets.elementAt(2)*componets.elementAt(1));
         else
-            t2=(componets[2]+componets[1])-(componets[2]*componets[1]);
-        Double t1=(2*componets[2])-t2;
+            t2=(componets.elementAt(2)+componets.elementAt(1))-(componets.elementAt(2)*componets.elementAt(1));
+        Double t1=(2*componets.elementAt(2))-t2;
         Vector<Double> tcie;
-        if(componets[1]==0)){
-            tcie[0]=0.430574 * componets[2] + 0.341550 * componets[2] + 0.178325 * componets[2];
-            tcie[1]=0.222015 * componets[2] + 0.706655 * componets[2] + 0.071330 * componets[2];
-            tcie[2]=0.020183 * componets[2] + 0.129553 * componets[2] + 0.939180 * componets[2];
+        if(componets.elementAt(1)==0){
+            tcie.setElementAt((0.430574 * componets.elementAt(2) + 0.341550 * componets.elementAt(2) + 0.178325 * componets.elementAt(2)), 0);
+            tcie.setElementAt((0.222015 * componets.elementAt(2) + 0.706655 * componets.elementAt(2) + 0.071330 * componets.elementAt(2)), 1);
+            tcie.setElementAt((0.020183 * componets.elementAt(2) + 0.129553 * componets.elementAt(2) + 0.939180 * componets.elementAt(2)), 2);
         }else{
-            tcie[0]=0.430574 * hsl_value(t1,t2,componets[0]+120) + 0.341550 * hsl_value(t1,t2,componets[0]) + 0.178325 * hsl_value(t1,t2,componets[0]-120);
-            tcie[1]=0.222015 * hsl_value(t1,t2,componets[0]+120) + 0.706655 * hsl_value(t1,t2,componets[0]) + 0.071330 * hsl_value(t1,t2,componets[0]-120);
-            tcie[2]=0.020183 * hsl_value(t1,t2,componets[0]+120) + 0.129553 * hsl_value(t1,t2,componets[0]) + 0.939180 * hsl_value(t1,t2,componets[0]-120);
+            tcie.setElementAt((0.430574 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.341550 * hsl_value(t1,t2,componets.elementAt(0)) + 0.178325 * hsl_value(t1,t2,componets.elementAt(0)-120)), 0);
+            tcie.setElementAt((0.222015 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.706655 * hsl_value(t1,t2,componets.elementAt(0)) + 0.071330 * hsl_value(t1,t2,componets.elementAt(0)-120)), 1);
+            tcie.setElementAt((0.020183 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.129553 * hsl_value(t1,t2,componets.elementAt(0)) + 0.939180 * hsl_value(t1,t2,componets.elementAt(0)-120)), 2);
         }
-        hue=componets[0];
-        saturation=componets[1];
-        lightness=componets[3];
+        hue=componets.elementAt(0);
+        saturation=componets.elementAt(1);
+        lightness=componets.elementAt(2);
         super.setComponents(tcie);
     }
-}
+  }
 
   /**
   * @brief getNumberOfComponets
@@ -173,7 +205,7 @@ public class HSL extends CIExyz{
   */
   public int getNumberOfComponets(){
     return componets;
-}
+  }
 
   /**
   * @brief hsl_value
@@ -195,6 +227,6 @@ public class HSL extends CIExyz{
         return t1+(t2-t1)*((240-h)/60);
     else
         return t1;
-}
+  }
 
 }

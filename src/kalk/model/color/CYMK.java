@@ -1,14 +1,19 @@
 /**
-*@author Giuseppe Vito Bitetti
+* @author Giuseppe Vito Bitetti
+* @date 20/7/2018
+* @class CYMK
+* @brief this class uses the as base class CIExyz
+* and stores a color in CYMK rappresentation
 */
 
 package kalk.model.color;
 
 import java.util.Vector;
-
-import kalk.model.color.CIExyz;
+import java.util.Arrays;
+import kalk.model.color.Color;
+import kalk.model.factory.ColorFactory;
 import kalk.model.IllegalColorException;
-
+import kalk.model.color.CIExyz;
 public class CYMK extends CIExyz {
 
 	// instance variables
@@ -23,6 +28,13 @@ public class CYMK extends CIExyz {
 	static final int componets = 4;
 
 	// Costructor
+	public CYMK(){
+		cyan=0;
+		yellow=0;
+		magenta=0;
+		key_black=0;
+	}
+
 	public CYMK(int c, int y, int m, int k) {
 		super(getCIE(c, y, m, k));
 		cyan = c;
@@ -32,8 +44,8 @@ public class CYMK extends CIExyz {
 
 	}
 
-	public CYMK(Color from){
-      Vector<Double> xyz=CIExyz::getComponents();
+	public CYMK(Color from) throws IllegalColorException{
+      Vector<Double> xyz=super.getComponents();
       Double cp=1 -(3.063219*xyz.elementAt(0) -1.393326*xyz.elementAt(1) -0.475801*xyz.elementAt(2));
       Double mp=1 -(-0.969245*xyz.elementAt(0) +1.875968*xyz.elementAt(1) +0.041555*xyz.elementAt(2));
       Double yp=1 -(0.067872*xyz.elementAt(0) -0.228833*xyz.elementAt(1) +1.069251*xyz.elementAt(2));
@@ -141,7 +153,7 @@ public class CYMK extends CIExyz {
   * @param componets
   */
   public void setComponents(Vector<Double> componets){
-    QVector<Double> tcie;
+    Vector<Double> tcie;
     tcie.elementAt(0)=0.41245 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.35757 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.18043 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100));
     tcie.elementAt(1)=0.21267 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.71515 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.07217 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100));
     tcie.elementAt(2)=0.01933 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.11919 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.95030 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100));
