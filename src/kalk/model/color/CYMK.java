@@ -47,17 +47,18 @@ public class CYMK extends CIExyz {
 	public CYMK(Color from) throws IllegalColorException{
       Vector<Double> xyz=super.getComponents();
 			Double _r=3.063219*xyz.elementAt(0) -1.393326*xyz.elementAt(1) -0.475801*xyz.elementAt(2);
-		  Double _g=-0.969245*xyz.elementAt(0) +1.875968*xyz.elementAt(1) +0.041555*xyz.elementAt(2);
-		  Double _b=0.067872*xyz.elementAt(0) -0.228833*xyz.elementAt(1) +1.069251*xyz.elementAt(2);
+			Double _g=-0.969245*xyz.elementAt(0) +1.875968*xyz.elementAt(1) +0.041555*xyz.elementAt(2);
+			Double _b=0.067872*xyz.elementAt(0) -0.228833*xyz.elementAt(1) +1.069251*xyz.elementAt(2);
 		  Double _c=1-_r;
 		  Double _y=1-_g;
 		  Double _m=1-_b;
 			Double _k=_c;
-			if(_k<_y)
-				_k=_y;
-			if(_k<_m)
-				_k=_m;
-			_k=1-_k;
+			if(_c.compareTo(_y)<0)
+	      _k=_y;
+	    else
+	      _k=_c;
+	    if(_k.compareTo(_m)<0)
+	      _k=_m;
 		  Double k=_k*100;
 		      Double c=((_c-_k)/(1-_k))*100;
 		      Double m=((_m-_k)/(1-_k))*100;

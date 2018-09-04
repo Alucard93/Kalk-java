@@ -23,9 +23,9 @@ public class HSL extends CIExyz{
   private Double lightness;
 
   //static variables
-  static final int upper_limit_sat_lig=360;
+  static final int upper_limit_sat_lig=1;
   static final int lower_limit_sat_lig=0;
-  static final int upper_limit_hue=1;
+  static final int upper_limit_hue=360;
   static final int lower_limit_hue=0;
   static final int componets = 3;
 
