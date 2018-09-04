@@ -46,31 +46,31 @@ public class CYMK extends CIExyz {
 
 	public CYMK(Color from) throws IllegalColorException{
       Vector<Double> xyz=super.getComponents();
-      Double cp=1 -(3.063219*xyz.elementAt(0) -1.393326*xyz.elementAt(1) -0.475801*xyz.elementAt(2));
-      Double mp=1 -(-0.969245*xyz.elementAt(0) +1.875968*xyz.elementAt(1) +0.041555*xyz.elementAt(2));
-      Double yp=1 -(0.067872*xyz.elementAt(0) -0.228833*xyz.elementAt(1) +1.069251*xyz.elementAt(2));
-      Double kp=min({cp,mp,yp});
-      Double t=1-kp;
-      if(t==0){
-          cyan=0;
-          yellow=0;
-          magenta=0;
-          key_black=0;
-      }else{
-           int c=(int)(((cp-kp)/t)*100);
-           int y=(int)(((yp-kp)/t)*100);
-           int m=(int)(((mp-kp)/t)*100);
-           int k=(int)(kp);
-          if((c>upper_limit_cymk || y>upper_limit_cymk || m>upper_limit_cymk || k>upper_limit_cymk))
-              throw new IllegalColorException("il colore non rientra nei parametri");
-          else{
-              cyan=c;
-              yellow=y;
-              magenta=m;
-              key_black=k;
-          }
-      }
-  }
+			Double _r=3.063219*xyz.elementAt(0) -1.393326*xyz.elementAt(1) -0.475801*xyz.elementAt(2);
+		  Double _g=-0.969245*xyz.elementAt(0) +1.875968*xyz.elementAt(1) +0.041555*xyz.elementAt(2);
+		  Double _b=0.067872*xyz.elementAt(0) -0.228833*xyz.elementAt(1) +1.069251*xyz.elementAt(2);
+		  Double _c=1-_r;
+		  Double _y=1-_g;
+		  Double _m=1-_b;
+			Double _k=_c;
+			if(_k<_y)
+				_k=_y;
+			if(_k<_m)
+				_k=_m;
+			_k=1-_k;
+		  Double k=_k*100;
+		      Double c=((_c-_k)/(1-_k))*100;
+		      Double m=((_m-_k)/(1-_k))*100;
+		      Double y=((_y-_k)/(1-_k))*100;
+		      if((c>upper_limit_cymk || y>upper_limit_cymk || m>upper_limit_cymk || k>upper_limit_cymk))
+		          throw new IllegalColorException("il colore non rientra nei parametri");
+		      else{
+		          cyan=c.intValue();
+		          yellow=y.intValue();
+		          magenta=m.intValue();
+		          key_black=k.intValue();
+		      }
+		}
 
 	public CYMK(CYMK from) {
 		super(from);
@@ -158,10 +158,10 @@ public class CYMK extends CIExyz {
     tcie.elementAt(1)=0.21267 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.71515 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.07217 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100));
     tcie.elementAt(2)=0.01933 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.11919 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.95030 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100));
     super.setComponents(tcie);
-    cyan=static_cast<int>(componets.elementAt(0));
-    yellow=static_cast<int>(componets.elementAt(1));
-    magenta=static_cast<int>(componets.elementAt(2));
-    key_black=static_cast<int>(componets.elementAt(3));
+    cyan=componets.elementAt(0).intValue();
+    yellow=componets.elementAt(1).intValue();
+    magenta=componets.elementAt(2).intValue();
+    key_black=componets.elementAt(3).intValue();
   }
 
 }
