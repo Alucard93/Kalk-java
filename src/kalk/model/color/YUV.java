@@ -67,7 +67,7 @@ public class YUV extends RGB{
    * @return QString that contains the meaning of the values contained in getComponents()
    */
   public String getRappresentation(){
-      return String("YUV");
+      return new String("YUV");
   }
 
   /**
@@ -120,7 +120,10 @@ public class YUV extends RGB{
  * @return QVector<double> with the y, u, v component of the color in YUV
  */
  public Vector<Double> getComponents(){
-    Vector<Double> to_return={y,u,v};
+    Vector<Double> to_return;
+    to_return.add(y);
+    to_return.add(u);
+    to_return.add(v);
     return to_return;
   }
 
@@ -149,7 +152,7 @@ public void setComponents(Vector<Double> componets){
  * @return Color pointer with a new Object color
  */
  public Color division(int div){
-    return new YUV(super.operator/(div));
+    return new YUV(super.division(div));
   }
 
 };

@@ -139,7 +139,11 @@ public class CYMK extends CIExyz {
 	 *         the color in CIE XYZ
 	 */
 	public Vector<Double> getComponents() {
-		Vector<Double> to_return = { (Double) cyan, (Double) yellow, (Double) magenta, (Double) key_black };
+		Vector<Double> to_return;
+		to_return.add((double) cyan);
+	  to_return.add((double) yellow);
+		to_return.add((double) magenta);
+		to_return.add((double) key_black);
 		return to_return;
 	}
 
