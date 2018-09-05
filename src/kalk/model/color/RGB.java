@@ -179,6 +179,8 @@ public class RGB extends CIExyz
 				toSet+=(CIE_RGB[i][j]*tomultiply);
 			}
 			RGBrap.add(toSet*255);
+			if(RGBrap.lastElement()>255)
+				RGBrap.setElementAt((double) 255,RGBrap.size()-1);
 		}
 		
 		return RGBrap;
