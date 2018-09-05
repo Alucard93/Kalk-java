@@ -2,7 +2,7 @@
 * @author Giuseppe Vito Bitetti
 * @date 20/7/2018
 * @class HSL
-* @brief this class uses the as base class CIExyz
+* @brief this class uses as base class CIExyz
 * and stores a color in HSL rappresentation
 */
 

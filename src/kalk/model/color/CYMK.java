@@ -2,7 +2,7 @@
 * @author Giuseppe Vito Bitetti
 * @date 20/7/2018
 * @class CYMK
-* @brief this class uses the as base class CIExyz
+* @brief this class uses as base class CIExyz
 * and stores a color in CYMK rappresentation
 */
 
@@ -14,6 +14,7 @@ import kalk.model.color.Color;
 import kalk.model.factory.ColorFactory;
 import kalk.model.IllegalColorException;
 import kalk.model.color.CIExyz;
+
 public class CYMK extends CIExyz {
 
 	// instance variables
@@ -45,6 +46,7 @@ public class CYMK extends CIExyz {
 	}
 
 	public CYMK(Color from) throws IllegalColorException{
+			super(from);
       Vector<Double> xyz=super.getComponents();
 			Double _r=3.063219*xyz.elementAt(0) -1.393326*xyz.elementAt(1) -0.475801*xyz.elementAt(2);
 			Double _g=-0.969245*xyz.elementAt(0) +1.875968*xyz.elementAt(1) +0.041555*xyz.elementAt(2);
