@@ -96,7 +96,7 @@ public class CYMK extends CIExyz {
 	 * @brief negate
 	 * @return Color pointer with a new color with the complementar values
 	 */
-	public CYMK negate() {
+	public Color negate() {
 		return new CYMK(super.negate());
 	}
 
@@ -105,7 +105,7 @@ public class CYMK extends CIExyz {
 	 * @param a
 	 * @return Color pointer with a new Object color mixed
 	 */
-	public CYMK mix(CYMK a) {
+	public Color mix(Color a) {
 		return new CYMK(super.mix(a));
 	}
 
