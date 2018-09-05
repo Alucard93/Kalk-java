@@ -3,6 +3,7 @@
  */
 package kalk.model;
 
+import java.util.ArrayList;
 import java.util.Vector;
 import kalk.model.color.Color;
 import kalk.model.factory.*;
@@ -12,134 +13,134 @@ import kalk.model.IllegalColorException;
  * @author Gianmarco Pettinato
  *
  */
-public class ColorModel implements Model {
-	private final ColorModel old;
-	private Color l_color;
-	private Color r_color;
+public class ColorModel implements Cloneable  {
+	private static String defaultType = "none";
+	private static ArrayList<ColorModel> localHistory = new ArrayList<ColorModel>();
+	private Color left;
+	private Color right;
 	private Color result;
-	private String l_type;
-	private String r_type;
-	private int alternative_right;
-	public Vector<String> opts;
-	private int op = -1;
+	private String leftType;
+	private String rightType;
+	private int alternativeRight=-1; 
+	private int operation = -1;
 	
-	public ColorModel(ColorModel old) {
-		ColorFactory.setFactoryReady();
-		opts = ColorFactory.availableOperations();
-		this.old=old;
+	public ColorModel(){
+		left = null;
+		right = null;
+		result = null;
+		leftType = defaultType;
+		rightType = defaultType;
 	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#availableOperations()
-	 */
-	@Override
+	
 	public Vector<String> availableOperations() {
-		return opts;
-	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#allAvailableTypes()
-	 */
-	@Override
-	public Vector<String> allAvailableTypes() {
-		return ColorFactory.getAllColorTypes();
+		return ColorFactory.availableOperations();
 	}
 	
-	public Vector<String> rightTypesAvailables(){
-		return ColorFactory.typeByOperation(op);
+	public Vector<String> allAvailableTypes() {
+		return ColorFactory.typeByOperation(-1);
 	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#setLeftType(java.lang.String)
-	 */
-	@Override
+	
 	public int setLeftType(String type) {
-		l_type=type;
-		l_color = ColorFactory.getNewColor(type);
-		opts = ColorFactory.permittedOperations(type);
-		return l_color.getNumberOfComponets();
+		if(left!=null)
+			left=null;
+		left=ColorFactory.getNewColor(type);
+		leftType=type;
+		return left.getNumberOfComponets();
 	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#setLeftValues(java.util.Vector)
-	 */
-	@Override
-	public void setLeftValues(Vector<String> values) throws IllegalColorException{
-		Vector<Double> toSet = str2double(values);
-		l_color.setComponents(toSet);
-
-	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#setRightType(java.lang.String)
-	 */
-	@Override
+	
 	public int setRightType(String type) {
-		r_type= type;
-		if(!type.equals("int")) 
+		int size;
+		if(right!=null)
+			right=null;
+		if(type!="intero")
 		{
-			r_color = ColorFactory.getNewColor(type);
-			return r_color.getNumberOfComponets();
-		}
-		return 1;
-
-	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#setRightValues(java.util.Vector)
-	 */
-	@Override
-	public void setRightValues(Vector<String> values) throws IllegalColorException {
-		Vector<Double> toSet = str2double(values);
-		if(!r_type.equals("int"))
-			r_color.setComponents(toSet);
-		else
-			alternative_right=toSet.firstElement().intValue();
-
-	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#setOp(java.lang.String)
-	 */
-	public void setOp(String eOperation) {
-		op = opts.indexOf(eOperation);
-
-	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#execute()
-	 */
-	@Override
-	public void execute() throws IllegalColorException
-	{
-		if(r_type.equals("int"))
-			result = ColorFactory.Execution(l_color, op, alternative_right);
-		else if(r_color!=null)
-			result = ColorFactory.Execution(l_color, op, r_color);
-		else
-			result = ColorFactory.Execution(l_color, op);
+			right=ColorFactory.getNewColor(type);
+			size = right.getNumberOfComponets();
+		}else
+			size = 1 ;
 			
+		rightType=type;
+		
+		return size;
 	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#getResult()
-	 */
-	@Override
-	public Vector<String> getResult() {
-		System.out.println("result");
+	
+	public void setLeftValues(Vector<String> values) throws IllegalColorException 
+	{
+		Vector<Double> toSet = string2double(values);
+		left.setComponents(toSet);
+	}
+	
+	public void setRightValues(Vector<String> values) throws IllegalColorException 
+	{
+		Vector<Double> toSet = string2double(values);
+		if(rightType!="intero")
+			right.setComponents(toSet);
+		else
+			alternativeRight = toSet.firstElement().intValue();
+	}
+	
+	public Vector<String> permittedOperations() {
+		return ColorFactory.permittedOperations(leftType);
+	}
+	
+	public Vector<String> permittedTypes(){
+		return ColorFactory.typeByOperation(operation);
+	}
+	
+	public void setOp(String operation) {
+		this.operation = ColorFactory.availableOperations().indexOf(operation);
+	}
+	
+	public void execute() throws IllegalColorException, CloneNotSupportedException {
+		if(rightType.equals("intero"))
+			result = ColorFactory.Execution(left, operation, alternativeRight);
+		else
+			result = ColorFactory.Execution(left, operation, right);
+		addHistory();
+	}
+	
+	public Vector<String> getResult(){
 		return double2string(result.getComponents());
 	}
-
-	/* (non-Javadoc)
-	 * @see kalk.model.Model#getHistory()
-	 */
+	
+	
+	
 	@Override
-	public Vector<String> getHistory() {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		String toReturn ="";
+		if(left!=null) {
+			toReturn+=leftType;
+			toReturn+=" "+double2string(left.getComponents());
+		}
+		if(operation!=-1)
+			toReturn+=" "+ColorFactory.availableOperations().elementAt(operation);
+		if(rightType!=defaultType) {
+			toReturn+=" "+rightType;
+			if(right!=null && rightType!="Intero") {
+				toReturn+=" "+double2string(right.getComponents());
+			}
+			if(rightType=="Intero") {
+				toReturn+=" "+String.valueOf(alternativeRight);
+			}
+		}
+		if(result!=null)
+			toReturn+=" "+double2string(result.getComponents());
+		return toReturn;
+			
 	}
 	
-	private Vector<Double> str2double(Vector<String> values){
+	public Vector<String> getHistory(){
+		Vector<String> history = new Vector<String>();
+		for(ColorModel model:localHistory)
+			history.add(model.toString());
+		return history;
+	}
+
+	private void addHistory() throws CloneNotSupportedException{
+		localHistory.add((ColorModel) this.clone());
+	}
+	
+	private Vector<Double> string2double(Vector<String> values){
 		Vector<Double> toReturn = new Vector<Double>();
 		for(String value : values) {
 			if(!value.isEmpty())

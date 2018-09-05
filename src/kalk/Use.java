@@ -1,44 +1,110 @@
 package kalk;
 
 import java.util.*;
+
 import kalk.model.ColorModel;
 import kalk.model.IllegalColorException;
+import kalk.model.Model;
 
 public class Use {
-	static boolean firstrun=false;
+	static boolean exit=false;
 	static Scanner inTerminal = new Scanner(System.in);
-	static String[] menu = {"Nuova (default)","Chiudi"};
-	
-	public static void main(String[] args) {
-		boolean ans = false;
-		ColorModel current = null;
-		boolean exit = false;
+	static String[] aMenu = {"Nuova (default)","Cronologia","Chiudi"};
+	static Vector<String> menu = new Vector<String>(Arrays.asList(aMenu));
+	static ColorModel model = new ColorModel();
+
+	public static void main(String[] args)
+	{
+		//menù
 		while(!exit) {
-			
+			showList(menu);
+			int choice = getChoice();
+			execute(choice);
 		}
 	}
-	
-	public static String showMenu() {
-		showChoices(menu);
-		return menu[getChoices()];
-	}
-	
-	public static void showChoices(String[] choices) {
-		int n=0;
-		System.out.println("Scegli una delle seguenti operazioni");
-		for(String choice:choices) {
-			System.out.println(n+" "+choice);
-			n++;
+
+	private static void execute(int choice) {
+		switch(choice) {
+		case 1:
+			showVector(model.getHistory());
+			break;
+		case 2:
+			exit = true;
+			break;
+		default:
+			newOperation();
+			break;				
 		}
-		
+
 	}
-	
-	public static int getChoices() {
+
+	private static void newOperation() {
+		showList(model.allAvailableTypes());
+		int leftSize = model.setLeftType(model.allAvailableTypes().elementAt(getChoice()));
+		boolean success = false;
+		while(!success) {
+			try {
+				model.setLeftValues(getValues(leftSize));
+				success = true;
+			} catch (IllegalColorException e) {
+				success = false;
+				System.out.println(e.what());
+			}	
+		}
+
+		showList(model.permittedOperations());
+		model.setOp(model.permittedOperations().elementAt(getChoice()));
+		if(!model.permittedTypes().lastElement().equals("none")) {
+			showList(model.permittedTypes());
+			int rightSize = model.setLeftType(model.allAvailableTypes().elementAt(getChoice()));
+			success = false;
+			while(!success) {
+				try {
+					model.setRightValues(getValues(rightSize));
+					success = true;
+				} catch (IllegalColorException e) {
+					success = false;
+					System.out.println(e.what());
+				}	
+			}
+		}
+		try {
+			model.execute();
+		} catch (IllegalColorException | CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Risultato");
+		showVector(model.getResult());
+
+	}
+
+	private static Vector<String> getValues(int size){
+		Vector<String> values = new Vector<String>(size);
+		System.out.println("Questo elemento ha bisogno di "+size+" input");
+		for(int i=0;i<size;i++)
+			values.add(i, inTerminal.nextLine());
+		return values;
+	}
+
+	private static void showVector(Vector<String> vector) {
+		for(String element : vector)
+			System.out.println(element);
+	}
+
+	private static int getChoice() {
 		return inTerminal.nextInt();
 	}
-	
-	
 
+	public static void showList(Vector<String> list) {
+		int i=0;
+		System.out.println("Selezionare una di queste voci");
+		for(String line:list) {
+			System.out.println(i+"."+line);
+			i++;
+		}
+
+	}
 }
 
 /**
@@ -69,7 +135,7 @@ void ConsoleView::setLeftTypes(const QVector<QString> types){
  * @brief ConsoleView::setRightTypes
  * @param types
  * sets up r_types variable
- 
+
 void ConsoleView::setRightTypes(const QVector<QString> types){
     r_types=types;
 }
@@ -77,7 +143,7 @@ void ConsoleView::setRightTypes(const QVector<QString> types){
  * @brief ConsoleView::setLeftFields
  * @param fields
  * sets up l_size variable
- 
+
 void ConsoleView::setLeftFields(const int& fields, const QVector<QString>& limits){
     l_size=fields;
 }
@@ -85,7 +151,7 @@ void ConsoleView::setLeftFields(const int& fields, const QVector<QString>& limit
  * @brief ConsoleView::setRightFields
  * @param fields
  * sets up r_size variable
- 
+
 void ConsoleView::setRightFields(const int& fields,const QVector<QString>& limits){
     r_size=fields;
 }
@@ -93,7 +159,7 @@ void ConsoleView::setRightFields(const int& fields,const QVector<QString>& limit
  * @brief ConsoleView::setAvailableOperations
  * @param opt
  * sets up all operations that are available not really required
- 
+
 void ConsoleView::setAvailableOperations(QVector<QString> opt){
     allOpts=opt;
 }
@@ -101,7 +167,7 @@ void ConsoleView::setAvailableOperations(QVector<QString> opt){
  * @brief ConsoleView::setPermittedOperations
  * @param opt
  * sets up all operations that the user can execute
- 
+
 void ConsoleView::setPermittedOperations(QVector<QString> opt){
     permittedOpts=opt;
 }
@@ -110,7 +176,7 @@ void ConsoleView::setPermittedOperations(QVector<QString> opt){
  * @brief ConsoleView::setResult
  * @param result
  * sets up local_result variable
- 
+
 void ConsoleView::setResult(QVector<QString> result){
     local_result=result;
 }
@@ -119,7 +185,7 @@ void ConsoleView::setResult(QVector<QString> result){
  * @brief ConsoleView::setResultFields
  * @param fields
  * does nothing because the resultFields are the same as left operand
- 
+
 
 void ConsoleView::setResultFields(const int& fields){
     //DO NOTHING
@@ -132,7 +198,7 @@ void ConsoleView::error(const QString& error_message){
 /**
  * @brief ConsoleView::show
  * inizialize the view inside the terminal
- 
+
 
 void ConsoleView::show(){
     bool exit=false;
@@ -156,7 +222,7 @@ void ConsoleView::show(){
 /**
  * @brief ConsoleView::newOperation
  * Shows the interface for new operation
- 
+
 
 
 void ConsoleView::newOperation()
@@ -185,7 +251,7 @@ void ConsoleView::newOperation()
  * @param n
  * @return user input in QVector<QString>
  * used to read input from user
- 
+
 QVector<QString> ConsoleView::consoleInput(int n){
 
     QVector<QString> toReturn;
@@ -211,7 +277,7 @@ void ConsoleView::showChoices(const QVector<QString>& s_vector){
  * @brief ConsoleView::showString
  * @param s_vector
  * prints on screen the content inside a QVector<QString>
- 
+
 void ConsoleView::showString(const QVector<QString>& s_vector){
     QString line;
     foreach(line,s_vector){
@@ -223,7 +289,7 @@ void ConsoleView::showString(const QVector<QString>& s_vector){
  * @brief ConsoleView::setHistory
  * @param history
  * shows history on terminal
- 
+
 
 void ConsoleView::setHistory(const QVector<QVector<QString>>& history){
     QVector<QString> lines;
@@ -237,7 +303,7 @@ void ConsoleView::setHistory(const QVector<QVector<QString>>& history){
 /**
  * @brief ConsoleView::showMenu
  * shows basic operation the menù in the terminal
- 
+
 
 void ConsoleView::showMenu(){
     showChoices(menu);
@@ -246,8 +312,8 @@ void ConsoleView::showMenu(){
 /**
  * @brief ConsoleView::update
  * useless
- 
+
 void ConsoleView::update(){
     l_update=true;
 }
-*/
+ */

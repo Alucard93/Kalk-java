@@ -90,7 +90,6 @@ public class ColorFactory
   {
     Vector<String> allColor = getAllColorTypes();
     Vector<String> toReturn = new Vector<String>(allColor.size()+1);
-    toReturn.add("Select type");
     if(operation!=-1)
     {
       for(int i=1;i<3&&(!Color.allOpts[operation][i].isEmpty());i++)
