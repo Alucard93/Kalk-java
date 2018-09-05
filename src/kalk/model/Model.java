@@ -9,9 +9,8 @@ public interface Model
   void setLeftValues(Vector<String> values)throws IllegalColorException;
   int setRightType(String type);
   void setRightValues(Vector<String> values)throws IllegalColorException;
-  void setLastResultAsLeftOperand();
   void setOp(String eOperation);
   void execute() throws IllegalColorException;
-  void getResult();
+  Vector<String> getResult();
   Vector<String> getHistory();
 }

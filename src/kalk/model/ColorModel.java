@@ -99,19 +99,8 @@ public class ColorModel implements Model {
 	}
 
 	/* (non-Javadoc)
-	 * @see kalk.model.Model#setLastResultAsLeftOperand()
-	 */
-	@Override
-	public void setLastResultAsLeftOperand() {
-		//l_type = old.l_type;
-		//TODO
-
-	}
-
-	/* (non-Javadoc)
 	 * @see kalk.model.Model#setOp(java.lang.String)
 	 */
-	@Override
 	public void setOp(String eOperation) {
 		op = opts.indexOf(eOperation);
 
@@ -136,8 +125,9 @@ public class ColorModel implements Model {
 	 * @see kalk.model.Model#getResult()
 	 */
 	@Override
-	public void getResult() {
+	public Vector<String> getResult() {
 		System.out.println("result");
+		return double2string(result.getComponents());
 	}
 
 	/* (non-Javadoc)
@@ -151,8 +141,16 @@ public class ColorModel implements Model {
 	
 	private Vector<Double> str2double(Vector<String> values){
 		Vector<Double> toReturn = new Vector<Double>();
-		for(String value:values) {
-			toReturn.add((double)Double.valueOf(value));
+		for(String value : values) {
+			if(!value.isEmpty())
+				toReturn.add((double)Double.valueOf(value));
+		}
+		return toReturn;
+	}
+	private Vector<String> double2string(Vector<Double> values){
+		Vector<String> toReturn = new Vector<String>();
+		for(double value : values) {
+			toReturn.add(String.valueOf(value));
 		}
 		return toReturn;
 	}

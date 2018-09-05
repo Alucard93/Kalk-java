@@ -78,16 +78,15 @@ public class CIExyz implements Color
   * @param componets
   */
 
-  public void setComponents(Vector<Double> v_componets) throws IllegalColorException
+  public void setComponents(Vector<Double> componets) throws IllegalColorException
   {
-    Double[] componets = (Double[])v_componets.toArray();
-    if(componets[0]<lower_limit_X || componets[0]>upper_limit_X ||
-      componets[1]<lower_limit_Y || componets[1]>upper_limit_Y ||
-      componets[2]<lower_limit_Z || componets[2]>upper_limit_Z)
+    if(componets.elementAt(0)<lower_limit_X || componets.elementAt(0)>upper_limit_X ||
+      componets.elementAt(1)<lower_limit_Y || componets.elementAt(1)>upper_limit_Y ||
+      componets.elementAt(2)<lower_limit_Z || componets.elementAt(2)>upper_limit_Z)
           throw new IllegalColorException("values out of boundaries");
-    x=componets[0].doubleValue();
-    y=componets[1].doubleValue();
-    z=componets[2].doubleValue();
+    x=componets.elementAt(0).doubleValue();
+    y=componets.elementAt(1).doubleValue();
+    z=componets.elementAt(2).doubleValue();
   }
 
   /**

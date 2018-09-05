@@ -172,13 +172,15 @@ public class RGB extends CIExyz
 		Vector<Double> RGBrap = new Vector<Double>(3);
 		for(int i=0; i<3; i++)
 		{
+			double toSet=0.00;
 			for(int j=0; j<3; j++)
 			{
 				double tomultiply = components.elementAt(j);
-				RGBrap.set(i,(CIE_RGB[i][j]*tomultiply)+RGBrap.elementAt(i).doubleValue());
+				toSet+=(CIE_RGB[i][j]*tomultiply);
 			}
-			RGBrap.set(i,RGBrap.elementAt(i)*255);
+			RGBrap.add(toSet*255);
 		}
+		
 		return RGBrap;
 	}
 
@@ -188,12 +190,15 @@ public class RGB extends CIExyz
 		Vector<Double> cierap = new Vector<Double>(3);
 		for(int i=0; i<3; i++)
 		{
+			double toSet = 0.00;
 			for(int j=0; j<3; j++)
 			{
 				double tomultiply = components.elementAt(j)/255;
-				cierap.set(j,(RGB_CIE[i][j]*tomultiply)+cierap.elementAt(j).doubleValue());
+				toSet+=(RGB_CIE[i][j]*tomultiply);
 			}
+			cierap.add((Math.round(toSet*100000)/100000.0));
 		}
 		return cierap;
 	}
+	
 }

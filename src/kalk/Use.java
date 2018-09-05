@@ -30,7 +30,7 @@ public class Use {
 	}
 	
 	public static String choseOptions() {
-		System.out.println("Come si vuole procedere? [New, History, Close, ANS] default=(New)");
+		System.out.println("Come si vuole procedere? [Nuovo,Close] default=(New)");
 		return inTerminal.nextLine();
 	}
 	
@@ -70,7 +70,9 @@ public class Use {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		model.getResult();
+		Vector<String> result = model.getResult();
+		for(String line: result)
+			System.out.println(line);
 		return model;
 		
 	}
@@ -82,11 +84,12 @@ public class Use {
 	public static Vector<String> getInput(int n){
 		System.out.println("reuquires "+n+" parameters");
 		int i = n; 
-		Vector<String> toSet = new Vector<String>(n);
+		Vector<String> toSet = new Vector<String>();
 		while(i>=0) {
 			toSet.add(inTerminal.nextLine());
 			i--;
 		}
+		toSet.remove(0);
 		return toSet;
 	}
 
