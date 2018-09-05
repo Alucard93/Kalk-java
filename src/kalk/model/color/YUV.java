@@ -74,7 +74,7 @@ public class YUV extends RGB{
  * @brief YUV::negate
  * @return Color pointer with a new color with the complementar values
  */
- public Color negate() const{
+ public Color negate(){
     return new YUV(super.negate());
   }
 
@@ -136,11 +136,11 @@ public int getNumberOfComponets(){
  * @brief YUV::setComponents set the components inside the object
  * @param componets
  */
-public void setComponents(QVector<double> componets){
+public void setComponents(Vector<Double> componets){
     y=componets.elementAt(0);
     u=componets.elementAt(1);
     v=componets.elementAt(2);
-    super.setComponents(getRGB(componets.elementAt(0), componets.elementAt(1), componets.elementAt(2))->getComponents());
+    super.setComponents(getRGB(componets.elementAt(0), componets.elementAt(1), componets.elementAt(2)).getComponents());
 }
 
 /**
@@ -148,7 +148,7 @@ public void setComponents(QVector<double> componets){
  * @param div
  * @return Color pointer with a new Object color
  */
- public Color operator/(int div){
+ public Color division(int div){
     return new YUV(super.operator/(div));
   }
 
