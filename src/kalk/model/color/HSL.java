@@ -21,6 +21,7 @@ public class HSL extends CIExyz{
   private Double hue;
   private Double saturation;
   private Double lightness;
+  private static final boolean factory = ColorFactory.addColorFactory("HSL", new HSL());
 
   //static variables
   static final int upper_limit_sat_lig=1;
@@ -43,7 +44,7 @@ public class HSL extends CIExyz{
     lightness=l;
   }
 
-  public HSL(Color from){
+  public HSL(Color from) throws IllegalColorException{
     super(from);
     Vector<Double> xyz=super.getComponents();
     Double t1=3.063219*xyz.elementAt(0) -1.393326*xyz.elementAt(1) -0.475801*xyz.elementAt(2);
@@ -110,8 +111,9 @@ public class HSL extends CIExyz{
   /**
   * @brief negate
   * @return Color pointer with a new color with the complementar values
+ * @throws IllegalColorException 
   */
-  public HSL negate(){
+  public HSL negate() throws IllegalColorException{
     return new HSL(super.negate());
   }
 
@@ -119,8 +121,9 @@ public class HSL extends CIExyz{
   * @brief mix
   * @param a
   * @return Color pointer with a new Object color mixed
+ * @throws IllegalColorException 
   */
-  public HSL mix(HSL a){
+  public HSL mix(HSL a) throws IllegalColorException{
     return new HSL(super.mix(a));
   }
 
@@ -131,10 +134,10 @@ public class HSL extends CIExyz{
   * @param l
   * @return Color pointer with a clone of *this
   */
-  public HSL getCIE(Double h, Double s, Double l) throws IllegalColorException{
+  public CIExyz getCIE(Double h, Double s, Double l) throws IllegalColorException{
     if((h>upper_limit_hue || s>upper_limit_sat_lig || l>upper_limit_sat_lig) ||
        (h<lower_limit_hue || s<lower_limit_sat_lig || l<lower_limit_sat_lig))
-        throw IllegalColorException("il colore non rientra nei parametri");
+        throw new IllegalColorException("il colore non rientra nei parametri");
     else{
         Double t2;
         if(l<=0.5)
@@ -174,7 +177,7 @@ public class HSL extends CIExyz{
   public void setComponents(Vector<Double> componets) throws IllegalColorException{
     if((componets.elementAt(0)>upper_limit_hue || componets.elementAt(1)>upper_limit_sat_lig || componets.elementAt(2)>upper_limit_sat_lig) ||
        (componets.elementAt(0)<lower_limit_hue || componets.elementAt(1)<lower_limit_sat_lig || componets.elementAt(2)<lower_limit_sat_lig))
-        throw IllegalColorException("il colore non rientra nei parametri");
+        throw new IllegalColorException("il colore non rientra nei parametri");
     else{
         Double t2;
         if(componets.elementAt(2)<=0.5)
@@ -182,7 +185,7 @@ public class HSL extends CIExyz{
         else
             t2=(componets.elementAt(2)+componets.elementAt(1))-(componets.elementAt(2)*componets.elementAt(1));
         Double t1=(2*componets.elementAt(2))-t2;
-        Vector<Double> tcie;
+        Vector<Double> tcie = new Vector<Double>(3);
         if(componets.elementAt(1)==0){
             tcie.setElementAt((0.430574 * componets.elementAt(2) + 0.341550 * componets.elementAt(2) + 0.178325 * componets.elementAt(2)), 0);
             tcie.setElementAt((0.222015 * componets.elementAt(2) + 0.706655 * componets.elementAt(2) + 0.071330 * componets.elementAt(2)), 1);
@@ -227,6 +230,10 @@ public class HSL extends CIExyz{
         return t1+(t2-t1)*((240-h)/60);
     else
         return t1;
+  }
+  
+  public Color getNewIstance() {
+	  return new HSL();
   }
 
 }

@@ -20,6 +20,8 @@ public class YUV extends RGB{
     private double y;
     private double u;
     private double v;
+    @SuppressWarnings("unused")
+	private static final boolean factory = ColorFactory.addColorFactory("RGB", new YUV());
 // static variables
     static final double low_y = 0.0;
     static final double max_y = 1.0;
@@ -55,7 +57,7 @@ public class YUV extends RGB{
     }
   }
 
-  public YUV(YUV from){
+  public YUV(YUV from) throws IllegalColorException{
     super(from);
     y=from.y;
     u=from.u;
@@ -73,8 +75,9 @@ public class YUV extends RGB{
   /**
  * @brief YUV::negate
  * @return Color pointer with a new color with the complementar values
+ * @throws IllegalColorException 
  */
- public Color negate(){
+ public Color negate() throws IllegalColorException{
     return new YUV(super.negate());
   }
 
@@ -82,8 +85,9 @@ public class YUV extends RGB{
  * @brief YUV::mix
  * @param a
  * @return Color pointer with a new Object color mixed
+ * @throws IllegalColorException 
  */
-  public Color mix(Color a){
+  public Color mix(Color a) throws IllegalColorException{
     return new YUV(super.mix(a));
   }
 
@@ -93,8 +97,9 @@ public class YUV extends RGB{
  * @param _u
  * @param _v
  * @return Color pointer with a clone of *this in the RGB format
+ * @throws IllegalColorException 
  */
- private Color getRGB(Double _y, Double _u, Double _v){
+ private Color getRGB(Double _y, Double _u, Double _v) throws IllegalColorException{
     int r= (int)(_y + 1.140*_v);
     int g= (int)(_y - 0.395*_u - 0.581*_v);
     int b= (int)(_y + 2.032*_u);
@@ -107,8 +112,9 @@ public class YUV extends RGB{
  * @param u
  * @param v
  * @return Color pointer with a clone of *this in the CIExyz format
+ * @throws IllegalColorException 
  */
- public Color getCIE(double y, double u, double v){
+ public Color getCIE(double y, double u, double v) throws IllegalColorException{
     int r= (int)(y + 1.140*v);
     int g= (int)(y - 0.395*u - 0.581*v);
     int b= (int)(y + 2.032*u);
@@ -120,7 +126,7 @@ public class YUV extends RGB{
  * @return QVector<double> with the y, u, v component of the color in YUV
  */
  public Vector<Double> getComponents(){
-    Vector<Double> to_return;
+    Vector<Double> to_return = new Vector<Double>();
     to_return.add(y);
     to_return.add(u);
     to_return.add(v);
@@ -138,8 +144,9 @@ public int getNumberOfComponets(){
 /**
  * @brief YUV::setComponents set the components inside the object
  * @param componets
+ * @throws IllegalColorException 
  */
-public void setComponents(Vector<Double> componets){
+public void setComponents(Vector<Double> componets) throws IllegalColorException{
     y=componets.elementAt(0);
     u=componets.elementAt(1);
     v=componets.elementAt(2);
@@ -150,9 +157,13 @@ public void setComponents(Vector<Double> componets){
  * @brief YUV::operator /
  * @param div
  * @return Color pointer with a new Object color
+ * @throws IllegalColorException 
  */
- public Color division(int div){
+ public Color division(int div) throws IllegalColorException{
     return new YUV(super.division(div));
   }
 
+ public Color getNewIstance() {
+	  return new YUV();
+ }
 };

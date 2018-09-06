@@ -22,6 +22,8 @@ public class CYMK extends CIExyz {
 	private int magenta;
 	private int yellow;
 	private int key_black;
+	@SuppressWarnings("unused")
+	private static final boolean factory = ColorFactory.addColorFactory("CYMK", new CYMK());
 
 	// static variables
 	static final int upper_limit_cymk = 100;
@@ -36,7 +38,7 @@ public class CYMK extends CIExyz {
 		key_black=0;
 	}
 
-	public CYMK(int c, int y, int m, int k) {
+	public CYMK(int c, int y, int m, int k) throws IllegalColorException {
 		super(getCIE(c, y, m, k));
 		cyan = c;
 		yellow = y;
@@ -95,8 +97,9 @@ public class CYMK extends CIExyz {
 	/**
 	 * @brief negate
 	 * @return Color pointer with a new color with the complementar values
+	 * @throws IllegalColorException 
 	 */
-	public Color negate() {
+	public Color negate() throws IllegalColorException {
 		return new CYMK(super.negate());
 	}
 
@@ -104,8 +107,9 @@ public class CYMK extends CIExyz {
 	 * @brief mix
 	 * @param a
 	 * @return Color pointer with a new Object color mixed
+	 * @throws IllegalColorException 
 	 */
-	public Color mix(Color a) {
+	public Color mix(Color a) throws IllegalColorException {
 		return new CYMK(super.mix(a));
 	}
 
@@ -118,7 +122,7 @@ public class CYMK extends CIExyz {
 	 * @return Color pointer with a clone of *this
 	 * @throws IllegalColorException
 	 */
-	public CIExyz getCIE(int c, int y, int m, int k) throws IllegalColorException {
+	public static CIExyz getCIE(int c, int y, int m, int k) throws IllegalColorException {
 		if ((c > upper_limit_cymk || y > upper_limit_cymk || m > upper_limit_cymk || k > upper_limit_cymk))
 			throw new IllegalColorException("il colore non rientra nei parametri");
 		else {
@@ -139,7 +143,7 @@ public class CYMK extends CIExyz {
 	 *         the color in CIE XYZ
 	 */
 	public Vector<Double> getComponents() {
-		Vector<Double> to_return;
+		Vector<Double> to_return = new Vector<Double>();
 		to_return.add((double) cyan);
 	  to_return.add((double) yellow);
 		to_return.add((double) magenta);
@@ -158,17 +162,22 @@ public class CYMK extends CIExyz {
 	/**
   * @brief setComponents set the components inside the object
   * @param componets
+	 * @throws IllegalColorException 
   */
-  public void setComponents(Vector<Double> componets){
-    Vector<Double> tcie;
-    tcie.elementAt(0)=0.41245 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.35757 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.18043 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100));
-    tcie.elementAt(1)=0.21267 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.71515 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.07217 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100));
-    tcie.elementAt(2)=0.01933 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.11919 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.95030 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100));
+  public void setComponents(Vector<Double> componets) throws IllegalColorException{
+    Vector<Double> tcie = new Vector<Double>();
+    tcie.add(0, 0.41245 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.35757 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.18043 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100)));
+    tcie.add(1,0.21267 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.71515 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.07217 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100)));
+    tcie.add(2,0.01933 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(0)/100)) + 0.11919 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(2)/100)) + 0.95030 * ((1-componets.elementAt(3)/100)*(1-componets.elementAt(1)/100)));
     super.setComponents(tcie);
     cyan=componets.elementAt(0).intValue();
     yellow=componets.elementAt(1).intValue();
     magenta=componets.elementAt(2).intValue();
     key_black=componets.elementAt(3).intValue();
+  }
+  
+  public Color getNewIstance() {
+	  return new CYMK();
   }
 
 }

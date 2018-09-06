@@ -3,7 +3,7 @@
 * @date 20/7/2018
 * @class YCbCr
 * @brief this class uses as base class RGB
-* and stores a color in YCbCr rappresentation
+* and stores a color in YCbCr representation
 */
 
 package kalk.model.color;
@@ -20,6 +20,8 @@ public class YCbCr extends RGB{
   private Double y;
   private Double cb;
   private Double cr;
+  @SuppressWarnings("unused")
+  private static final boolean factory = ColorFactory.addColorFactory("YCbCr", new YCbCr());
   // static variables
   static final int componets=3;
   static final Double max_y= 235.0;
@@ -45,9 +47,9 @@ public class YCbCr extends RGB{
     super(from);
     RGB temp= new RGB(from);
     Vector<Double> rgb= temp.getComponents();
-    Double ty= 16  + 1/255* (65.738*rgb.elementA(0) + 129.057*rgb.elementA(1) + 25.064*rgb.elementA(2));
-    Double tcb= 128 + 1/255* (-37.945*rgb.elementA(0) - 74.494*rgb.elementA(1) + 112.439*rgb.elementA(2));
-    Double tcr= 128 + 1/255* (112.439*rgb.elementA(0) - 94.154*rgb.elementA(1) - 18.285*rgb.elementA(2));
+    Double ty= 16  + 1/255* (65.738*rgb.elementAt(0) + 129.057*rgb.elementAt(1) + 25.064*rgb.elementAt(2));
+    Double tcb= 128 + 1/255* (-37.945*rgb.elementAt(0) - 74.494*rgb.elementAt(1) + 112.439*rgb.elementAt(2));
+    Double tcr= 128 + 1/255* (112.439*rgb.elementAt(0) - 94.154*rgb.elementAt(1) - 18.285*rgb.elementAt(2));
     if(tcb>max_cbcr || tcb>max_cbcr || tcr<min_cbcr || tcr<min_cbcr || ty>max_y ||ty<min_y){
         throw new IllegalColorException("il colore non rientra nei parametri");
     }else{
@@ -57,7 +59,7 @@ public class YCbCr extends RGB{
     }
   }
 
-  public YCbCr(YCbCr from){
+  public YCbCr(YCbCr from) throws IllegalColorException{
     super(from);
     y=from.y;
     cb=from.cb;
@@ -74,9 +76,10 @@ public class YCbCr extends RGB{
 
   /**
    * @brief YCbCr::negate
-   * @return Color pointer with a new color with the complementar values
+   * @return Color pointer with a new color with the complementary values
+ * @throws IllegalColorException 
    */
-  public Color negate(){
+  public Color negate() throws IllegalColorException{
       return new YCbCr(super.negate());
   }
 
@@ -84,8 +87,9 @@ public class YCbCr extends RGB{
    * @brief YCbCr::mix
    * @param a
    * @return Color pointer with a new Object color mixed
+ * @throws IllegalColorException 
    */
-  public Color mix(Color a){
+  public Color mix(Color a) throws IllegalColorException{
       return new YCbCr(super.mix(a));
   }
 
@@ -95,8 +99,9 @@ public class YCbCr extends RGB{
    * @param cb
    * @param cr
    * @return Color pointer with a clone of *this in the CIExyz format
+ * @throws IllegalColorException 
    */
-  public Color getCIE(double y, double cb, double cr){
+  public Color getCIE(double y, double cb, double cr) throws IllegalColorException{
       int r= (int)((298.082*y + 408.583*cr) / 256 - 222.921);
       int g= (int)((298.082*y - 100.291*cb - 208.120*cr ) / 256 + 135.576);
       int b= (int)((298.082*y + 516.412*cb) / 256 - 276.836);
@@ -109,8 +114,9 @@ public class YCbCr extends RGB{
    * @param cb
    * @param cr
    * @return Color pointer with a clone of *this in the RGB format
+ * @throws IllegalColorException 
    */
-  private Color getRGB(double y, double cb, double cr){
+  private Color getRGB(double y, double cb, double cr) throws IllegalColorException{
       int r= (int)((298.082*y + 408.583*cr) / 256 - 222.921);
       int g= (int)((298.082*y - 100.291*cb - 208.120*cr ) / 256 + 135.576);
       int b= (int)((298.082*y + 516.412*cb) / 256 - 276.836);
@@ -121,8 +127,8 @@ public class YCbCr extends RGB{
    * @brief YCbCr::getComponent
    * @return QVector<double> with the y, cb, cr component of the color in YCbCr
    */
-  private Vector<Double> getComponents(){
-      Vector<Double> to_return;
+  public Vector<Double> getComponents(){
+      Vector<Double> to_return = new Vector<Double>();
       to_return.add(y);
       to_return.add(cb);
       to_return.add(cr);
@@ -131,17 +137,18 @@ public class YCbCr extends RGB{
 
   /**
    * @brief YCbCr::getNumberOfComponets
-   * @return int componets number
+   * @return int components number
    */
-  private int getNumberOfComponets(){
+  public int getNumberOfComponets(){
       return componets;
   }
 
   /**
    * @brief YCbCr::setComponents set the components inside the object
    * @param componets
+ * @throws IllegalColorException 
    */
-  public void setComponents(Vector<Double> componets){
+  public void setComponents(Vector<Double> componets) throws IllegalColorException{
       y=componets.elementAt(0);
       cb=componets.elementAt(1);
       cr=componets.elementAt(2);
@@ -152,9 +159,14 @@ public class YCbCr extends RGB{
    * @brief YCbCr::operator /
    * @param div
    * @return Color pointer with a new Object color
+ * @throws IllegalColorException 
    */
-  Color division(int div){
+  public Color division(int div) throws IllegalColorException{
       return new YCbCr(super.division(div));
+  }
+  
+  public Color getNewIstance() {
+	  return new YCbCr();
   }
 
 
