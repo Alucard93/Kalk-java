@@ -11,7 +11,7 @@ public class Use {
 	static Scanner inTerminal = new Scanner(System.in);
 	static String[] aMenu = {"Nuova","Cronologia","Chiudi"};
 	static Vector<String> menu = new Vector<String>(Arrays.asList(aMenu));
-	static ColorModel model = new ColorModel();
+	static Model model = new ColorModel();
 
 	public static void main(String[] args)
 	{

@@ -15,16 +15,15 @@ public class CIExyz implements Color
   private double z;
 
   //static variables
-  static final CIExyz local = new CIExyz();
-  static final boolean factory = ColorFactory.addColorFactory("CIExyz", local);
-  static final double lower_limit_X=0;
-  static final double upper_limit_X=0.95047;
-  static final double lower_limit_Y=0;
-  static final double upper_limit_Y=1.00000;
-  static final double lower_limit_Z=0;
-  static final double upper_limit_Z=1.08883;
-  static final int componets=3;
-  static final String[] implementedMethods=new String[]{"negate","mix"};
+  private static final boolean factory = ColorFactory.addColorFactory("CIExyz", new CIExyz());
+  protected static final double lower_limit_X=0;
+  protected static final double upper_limit_X=0.95047;
+  protected static final double lower_limit_Y=0;
+  protected static final double upper_limit_Y=1.00000;
+  protected static final double lower_limit_Z=0;
+  protected static final double upper_limit_Z=1.08883;
+  protected static final int componets=3;
+  protected static final String[] implementedMethods=new String[]{"negate","mix"};
 
   //Costructor
   public CIExyz(double t_x, double t_y, double t_z) throws IllegalColorException
@@ -165,7 +164,7 @@ public class CIExyz implements Color
   * @brief operator /
   * @throws IllegalColorException("operation not available");
   */
-  public CIExyz division(int div) throws IllegalColorException
+  public Color division(int div) throws IllegalColorException
   {
     throw new IllegalColorException("operation not available");
   }
