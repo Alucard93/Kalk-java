@@ -1,10 +1,13 @@
 /**
 *@author Gianmarco Pettinato
 */
-
-import AbstractColor;
-import IllegalColorException;
-public class CIExyz implements AbstractColor{
+package kalk.model.color;
+import java.util.Vector;
+import java.util.Arrays;
+import kalk.model.IllegalColorException;
+import kalk.model.factory.*;
+public class CIExyz implements Color
+{
 
   //instance variables
   private double x;
@@ -12,6 +15,8 @@ public class CIExyz implements AbstractColor{
   private double z;
 
   //static variables
+  static final CIExyz local = new CIExyz();
+  static final boolean factory = ColorFactory.addColorFactory("CIExyz", local);
   static final double lower_limit_X=0;
   static final double upper_limit_X=0.95047;
   static final double lower_limit_Y=0;
@@ -19,10 +24,11 @@ public class CIExyz implements AbstractColor{
   static final double lower_limit_Z=0;
   static final double upper_limit_Z=1.08883;
   static final int componets=3;
-  static final Vector<String> implementedMethods={"negate","mix"};
+  static final String[] implementedMethods=new String[]{"negate","mix"};
 
   //Costructor
-  public CIExyz(double f_x=0, double f_y=0, double f_z=0) throws IllegalColorException{
+  public CIExyz(double t_x, double t_y, double t_z) throws IllegalColorException
+  {
     if(t_x<lower_limit_X || t_x>upper_limit_X ||
     t_y<lower_limit_Y || t_y>upper_limit_Y ||
     t_z<lower_limit_Z || t_z>upper_limit_Z)
@@ -32,10 +38,30 @@ public class CIExyz implements AbstractColor{
     z=t_z;
   }
 
-  public CIExyz(CIExyz color){
+  public CIExyz(){
+    x=0;
+    y=0;
+    z=0;
+  }
+
+  public CIExyz(CIExyz color)
+  {
     x=color.x;
     y=color.y;
     z=color.z;
+  }
+
+  public CIExyz(Color color) throws IllegalColorException
+  {
+    CIExyz c = (CIExyz)color.getCIE();
+    x=c.x;
+    y=c.y;
+    z=c.z;
+  }
+
+  public Color getNewIstance()
+  {
+    return new CIExyz();
   }
 
   /**
@@ -48,19 +74,19 @@ public class CIExyz implements AbstractColor{
   }
 
   /**
-  * @brief setComponents set the components inside the object
+  * @brief setComponents set the components =0inside the object
   * @param componets
   */
 
-  public void setComponents(Vector<double> componets) throws IllegalColorIllegalColorExceptionException
+  public void setComponents(Vector<Double> componets) throws IllegalColorException
   {
-    if(componets[0]<lower_limit_X || componets[0]>upper_limit_X ||
-      componets[1]<lower_limit_Y || componets[1]>upper_limit_Y ||
-      componets[2]<lower_limit_Z || componets[2]>upper_limit_Z)
+    if(componets.elementAt(0)<lower_limit_X || componets.elementAt(0)>upper_limit_X ||
+      componets.elementAt(1)<lower_limit_Y || componets.elementAt(1)>upper_limit_Y ||
+      componets.elementAt(2)<lower_limit_Z || componets.elementAt(2)>upper_limit_Z)
           throw new IllegalColorException("values out of boundaries");
-    x=componets[0];
-    y=componets[1];
-    z=componets[2];
+    x=componets.elementAt(0).doubleValue();
+    y=componets.elementAt(1).doubleValue();
+    z=componets.elementAt(2).doubleValue();
   }
 
   /**
@@ -69,14 +95,14 @@ public class CIExyz implements AbstractColor{
   */
   public String getRappresentation()
   {
-    return String("XYZ");
+    return new String("XYZ");
   }
 
   /**
   * @brief negate
   * @return Color pointer with a new color with the complementar values
-  */
-  public CIExyz negate()
+*/
+  public Color negate() throws IllegalColorException
   {
     double nx=upper_limit_X-x;
     double ny=upper_limit_Y-y;
@@ -88,21 +114,20 @@ public class CIExyz implements AbstractColor{
   * @param c
   * @return Color pointer with a new Object color mixed
   */
-  public CIExyz mix( CIExyz c)
+  public Color mix(Color c) throws IllegalColorException
   {
     CIExyz b = new CIExyz(c);
     double m_x= (b.x+this.x)/2;
     double m_y= (b.y+this.y)/2;
     double m_z= (b.z+this.z)/2;
     return new CIExyz(m_x,m_y,m_z);
-
   }
 
   /**
   * @brief getCIE
   * @return Color pointer with a clone of *this
   */
-  public CIExyz getCIE()
+  public Color getCIE() throws IllegalColorException
   {
     return new CIExyz(this);
   }
@@ -112,24 +137,36 @@ public class CIExyz implements AbstractColor{
   * @return Vector<double> with the x y z component of the color in CIE XYZ
   */
 
-  public Vector<double> getComponents() {
-    Vector<double> to_return={x,y,z};
+  public Vector<Double> getComponents()
+  {
+    Vector<Double> to_return=new Vector<Double>(3);
+    to_return.addElement(new Double(x));
+    to_return.addElement(new Double(y));
+    to_return.addElement(new Double(z));
     return to_return;
+  }
+
+  public Vector<String> getInfo(){
+    //TODO
+    return new Vector<String>();
   }
 
   /**
   * @brief availableOperations
   * @return all the operation that has been implemented
   */
-  Vector<String> availableOperations() {
-    return implementedMethods;
+  public Vector<String> availableOperations()
+  {
+    Vector<String> to_return = new Vector<String>(Arrays.asList(implementedMethods));
+    return to_return;
   }
 
   /**
   * @brief operator /
   * @throws IllegalColorException("operation not available");
   */
-  CIExyz operator/(int div) {
+  public CIExyz division(int div) throws IllegalColorException
+  {
     throw new IllegalColorException("operation not available");
   }
 
