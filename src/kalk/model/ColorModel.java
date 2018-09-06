@@ -25,6 +25,7 @@ public class ColorModel implements Cloneable  {
 	private int operation = -1;
 	
 	public ColorModel(){
+		ColorFactory.setFactoryReady();
 		left = null;
 		right = null;
 		result = null;
@@ -49,16 +50,14 @@ public class ColorModel implements Cloneable  {
 	}
 	
 	public int setRightType(String type) {
-		int size;
+		int size = 1 ;
 		if(right!=null)
 			right=null;
-		if(type!="intero")
+		if(!type.equals("intero"))
 		{
 			right=ColorFactory.getNewColor(type);
 			size = right.getNumberOfComponets();
-		}else
-			size = 1 ;
-			
+		}
 		rightType=type;
 		
 		return size;
@@ -116,10 +115,10 @@ public class ColorModel implements Cloneable  {
 			toReturn+=" "+ColorFactory.availableOperations().elementAt(operation);
 		if(rightType!=defaultType) {
 			toReturn+=" "+rightType;
-			if(right!=null && rightType!="Intero") {
+			if(right!=null && rightType!="intero") {
 				toReturn+=" "+double2string(right.getComponents());
 			}
-			if(rightType=="Intero") {
+			if(rightType.equals("intero")) {
 				toReturn+=" "+String.valueOf(alternativeRight);
 			}
 		}
@@ -130,9 +129,12 @@ public class ColorModel implements Cloneable  {
 	}
 	
 	public Vector<String> getHistory(){
-		Vector<String> history = new Vector<String>();
-		for(ColorModel model:localHistory)
-			history.add(model.toString());
+		int size = localHistory.size();
+		Vector<String> history = new Vector<String>(localHistory.size());
+		for(ColorModel model:localHistory) {
+			history.add("operazione n."+String.valueOf(size)+'\n'+model.toString());
+			size--;
+		}			
 		return history;
 	}
 

@@ -12,7 +12,7 @@ public interface Color
 	public static final String[][] allOpts= new String[][]{
 															{"negate","none",""},
 															{"mix","color",""},
-															{"divide","int",""}
+															{"divide","intero",""}
 														  };
 	public Color getNewIstance();
 	public int getNumberOfComponets(); // returns how many components the representation needs
