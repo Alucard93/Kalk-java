@@ -33,6 +33,7 @@ public class HSL extends CIExyz{
 
   //Costructor
   public HSL(){
+	  super();
       hue=0.0;
       saturation=0.0;
       lightness=0.0;

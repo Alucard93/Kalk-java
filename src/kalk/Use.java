@@ -33,7 +33,6 @@ public class Use {
 			try {
 				newOperation();
 			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;				

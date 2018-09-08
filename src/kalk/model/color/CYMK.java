@@ -32,6 +32,7 @@ public class CYMK extends CIExyz {
 
 	// Costructor
 	public CYMK(){
+		super();
 		cyan=0;
 		yellow=0;
 		magenta=0;
