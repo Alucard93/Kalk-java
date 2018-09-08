@@ -21,6 +21,7 @@ public class HSL extends CIExyz{
   private Double hue;
   private Double saturation;
   private Double lightness;
+  @SuppressWarnings("unused")
   private static final boolean factory = ColorFactory.addColorFactory("HSL", new HSL());
 
   //static variables
@@ -135,9 +136,10 @@ public class HSL extends CIExyz{
   * @return Color pointer with a clone of *this
   */
   public static CIExyz getCIE(Double h, Double s, Double l) throws IllegalColorException{
+	  HSL tmp = new HSL();
     if((h>upper_limit_hue || s>upper_limit_sat_lig || l>upper_limit_sat_lig) ||
        (h<lower_limit_hue || s<lower_limit_sat_lig || l<lower_limit_sat_lig))
-        throw new IllegalColorException("il colore non rientra nei parametri");
+        throw new IllegalColorException(tmp.getRappresentation()+": valori non accettabili");
     else{
         Double t2;
         if(l<=0.5)
@@ -180,7 +182,7 @@ public class HSL extends CIExyz{
   public void setComponents(Vector<Double> componets) throws IllegalColorException{
     if((componets.elementAt(0)>upper_limit_hue || componets.elementAt(1)>upper_limit_sat_lig || componets.elementAt(2)>upper_limit_sat_lig) ||
        (componets.elementAt(0)<lower_limit_hue || componets.elementAt(1)<lower_limit_sat_lig || componets.elementAt(2)<lower_limit_sat_lig))
-        throw new IllegalColorException("il colore non rientra nei parametri");
+        throw new IllegalColorException(getRepresentation()+": valori non accettabili");
     else{
         Double t2;
         if(componets.elementAt(2)<=0.5)
@@ -188,15 +190,15 @@ public class HSL extends CIExyz{
         else
             t2=(componets.elementAt(2)+componets.elementAt(1))-(componets.elementAt(2)*componets.elementAt(1));
         Double t1=(2*componets.elementAt(2))-t2;
-        Vector<Double> tcie = new Vector<Double>(3);
-        if(componets.elementAt(1)==0){
-            tcie.setElementAt((0.430574 * componets.elementAt(2) + 0.341550 * componets.elementAt(2) + 0.178325 * componets.elementAt(2)), 0);
-            tcie.setElementAt((0.222015 * componets.elementAt(2) + 0.706655 * componets.elementAt(2) + 0.071330 * componets.elementAt(2)), 1);
-            tcie.setElementAt((0.020183 * componets.elementAt(2) + 0.129553 * componets.elementAt(2) + 0.939180 * componets.elementAt(2)), 2);
+        Vector<Double> tcie = new Vector<Double>();
+        if(componets.elementAt(1)==0.0){
+            tcie.add((0.430574 * componets.elementAt(2) + 0.341550 * componets.elementAt(2) + 0.178325 * componets.elementAt(2)));
+            tcie.add((0.222015 * componets.elementAt(2) + 0.706655 * componets.elementAt(2) + 0.071330 * componets.elementAt(2)));
+            tcie.add((0.020183 * componets.elementAt(2) + 0.129553 * componets.elementAt(2) + 0.939180 * componets.elementAt(2)));
         }else{
-            tcie.setElementAt((0.430574 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.341550 * hsl_value(t1,t2,componets.elementAt(0)) + 0.178325 * hsl_value(t1,t2,componets.elementAt(0)-120)), 0);
-            tcie.setElementAt((0.222015 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.706655 * hsl_value(t1,t2,componets.elementAt(0)) + 0.071330 * hsl_value(t1,t2,componets.elementAt(0)-120)), 1);
-            tcie.setElementAt((0.020183 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.129553 * hsl_value(t1,t2,componets.elementAt(0)) + 0.939180 * hsl_value(t1,t2,componets.elementAt(0)-120)), 2);
+            tcie.add((0.430574 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.341550 * hsl_value(t1,t2,componets.elementAt(0)) + 0.178325 * hsl_value(t1,t2,componets.elementAt(0)-120)));
+            tcie.add((0.222015 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.706655 * hsl_value(t1,t2,componets.elementAt(0)) + 0.071330 * hsl_value(t1,t2,componets.elementAt(0)-120)));
+            tcie.add((0.020183 * hsl_value(t1,t2,componets.elementAt(0)+120) + 0.129553 * hsl_value(t1,t2,componets.elementAt(0)) + 0.939180 * hsl_value(t1,t2,componets.elementAt(0)-120)));
         }
         hue=componets.elementAt(0);
         saturation=componets.elementAt(1);
@@ -224,7 +226,7 @@ public class HSL extends CIExyz{
   * @return Double that rappresent the hue in module
   */
   private static Double hsl_value(Double t1, Double t2, Double h){
-    if(h>upper_limit_hue)
+    if(h>=upper_limit_hue)
         h-=upper_limit_hue;
     if(h<lower_limit_hue)
         h+=upper_limit_hue;
@@ -241,5 +243,17 @@ public class HSL extends CIExyz{
   public Color getNewIstance() {
 	  return new HSL();
   }
+  
+  public Vector<String> getLimits() {
+		String[] limits = {"Hue",String.valueOf(lower_limit_hue),String.valueOf(upper_limit_hue),
+				"Saturation",String.valueOf(lower_limit_sat_lig),String.valueOf(upper_limit_sat_lig),
+				"Lightness",String.valueOf(lower_limit_sat_lig),String.valueOf(upper_limit_sat_lig)};
+		Vector<String> toReturn = new Vector<String>(Arrays.asList(limits));
+		return toReturn;
+	}
+  
+  public Color getNewIstance(Color color) throws IllegalColorException {
+		return new HSL(color);
+	}
 
 }

@@ -4,6 +4,7 @@
 package kalk.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 import kalk.model.color.Color;
 import kalk.model.factory.*;
@@ -14,7 +15,8 @@ import kalk.model.IllegalColorException;
  *
  */
 public class ColorModel implements Model  {
-	private static String defaultType = "none";
+	private static String defaultType = "non disponibile";
+	private static String[] intLimit = {"numero","0","255"};
 	private static ArrayList<ColorModel> localHistory = new ArrayList<ColorModel>();
 	private int alternativeRight=-1;
 	private Color left;
@@ -23,7 +25,10 @@ public class ColorModel implements Model  {
 	private Color result;
 	private Color right; 
 	private String rightType;
-	
+	private String resultType;
+	private boolean ok;
+	private boolean resultRead;
+
 	public ColorModel(){
 		ColorFactory.setFactoryReady();
 		left = null;
@@ -31,20 +36,22 @@ public class ColorModel implements Model  {
 		result = null;
 		leftType = defaultType;
 		rightType = defaultType;
+		ok=true;
+		resultRead = false;
 	}
-	
+
 	private void addHistory() throws CloneNotSupportedException{
 		localHistory.add((ColorModel) this.clone());
 	}
-	
+
 	public Vector<String> allAvailableTypes() {
 		return ColorFactory.typeByOperation(-1);
 	}
-	
+
 	public Vector<String> availableOperations() {
 		return ColorFactory.availableOperations();
 	}
-	
+
 	private Vector<String> double2string(Vector<Double> values){
 		Vector<String> toReturn = new Vector<String>();
 		for(double value : values) {
@@ -52,15 +59,19 @@ public class ColorModel implements Model  {
 		}
 		return toReturn;
 	}
-	
+
 	public void execute() throws IllegalColorException, CloneNotSupportedException {
-		if(rightType.equals("intero"))
-			result = ColorFactory.Execution(left, operation, alternativeRight);
-		else
-			result = ColorFactory.Execution(left, operation, right);
-		addHistory();
+		Color tmp = null;
+		if(ok) {
+			if(rightType.equals("intero"))
+				result = ColorFactory.Execution(left, operation, alternativeRight);
+			else
+				result = ColorFactory.Execution(left, operation, right);
+			addHistory();
+		}
+		ok = true;
 	}
-	
+
 	public Vector<String> getHistory(){
 		int size = localHistory.size();
 		Vector<String> history = new Vector<String>(localHistory.size());
@@ -70,39 +81,116 @@ public class ColorModel implements Model  {
 		}			
 		return history;
 	}
-	
-	public Vector<String> getResult(){
-		return double2string(result.getComponents());
+
+	public int setResultType(String type) throws CloneNotSupportedException{
+		//boolean toEmit = false;
+		if(ColorFactory.typeByOperation(-1).contains(type))
+		{
+			Color tmp = result;
+			try
+			{
+
+				resultType=type;
+				if(result != null && resultRead)
+				{
+					result = ColorFactory.getNewColor(type,tmp);
+					//toEmit = true;
+					addHistory();
+				}
+				else if(!resultRead)
+				{
+					if(result != null)
+					{
+						result = null;
+					}
+					result = ColorFactory.getNewColor(type);
+				}
+				resultType=type;
+			} catch(IllegalColorException e){
+				ok=false;
+				result = tmp;
+				System.out.println(e.what());
+				resultType=result.getRepresentation();
+				System.out.println("Type_Result è stato resettato a "+type);
+			}
+			if(ok){
+				return (result.getNumberOfComponets());
+				//emit resultReady(double2qstring(result->getComponents()));
+			}
+
+		}
+		return 0;
 	}
-	
+
+	public Vector<String> getResult(){
+		resultRead=true;
+		if(operation==-1)
+			System.out.println("Bisogna selezionare un'operazione");
+		else if(result == null)
+			System.out.println("Qualcosa è andato storto ¯\\_(ツ)_/¯");
+		else
+			return double2string(result.getComponents());
+		return new Vector<String>(0);
+	}
+
 	public Vector<String> permittedOperations() {
 		return ColorFactory.permittedOperations(leftType);
 	}
-	
+
 	public Vector<String> permittedTypes(){
 		return ColorFactory.typeByOperation(operation);
 	}
-	
-	public int setLeftType(String type) {
+
+	public int setLeftType(String type) throws CloneNotSupportedException {
+		reset();
 		if(left!=null)
 			left=null;
 		left=ColorFactory.getNewColor(type);
 		leftType=type;
+		setResultType(type);
 		return left.getNumberOfComponets();
 	}
-	
-	public void setLeftValues(Vector<String> values) throws IllegalColorException 
+
+	private void reset() {
+		if(left!=null){
+			left=null;
+			leftType="non disponibile";
+		}
+		if(right!=null){
+			right=null;
+			rightType="non disponibile";
+		}
+		if(result!=null){
+
+			result=null;
+			resultType="non disponibile";
+		}
+		alternativeRight=-1;
+		operation=-1;
+		ok=true;
+		resultRead = false;
+	}
+
+
+	public void setLeftValues(Vector<String> values)
 	{
 		Vector<Double> toSet = string2double(values);
-		left.setComponents(toSet);
+		System.out.println(values+" "+toSet);
+		try {
+			left.setComponents(toSet);
+		} catch (IllegalColorException e) {
+			ok = false;
+			System.out.println(e.what());
+		}
 	}
-	
-	
-	
+
+
+
 	public void setOp(String operation) {
+		resultRead = false;
 		this.operation = ColorFactory.availableOperations().indexOf(operation);
 	}
-	
+
 	public int setRightType(String type) {
 		int size = 1 ;
 		if(right!=null)
@@ -113,19 +201,27 @@ public class ColorModel implements Model  {
 			size = right.getNumberOfComponets();
 		}
 		rightType=type;
-		
+
 		return size;
 	}
 
-	public void setRightValues(Vector<String> values) throws IllegalColorException 
+	public void setRightValues(Vector<String> values)
 	{
 		Vector<Double> toSet = string2double(values);
 		if(rightType!="intero")
-			right.setComponents(toSet);
+			try {
+				right.setComponents(toSet);
+			} catch (IllegalColorException e) {
+				ok = false;
+				System.out.println(e.what());
+			}
 		else
-			alternativeRight = toSet.firstElement().intValue();
+			if(toSet.firstElement().intValue()>255 || toSet.firstElement().intValue()<0)
+				System.out.println("il valore intero inserito non è valido");
+			else
+				alternativeRight = toSet.firstElement().intValue();
 	}
-	
+
 	private Vector<Double> string2double(Vector<String> values){
 		Vector<Double> toReturn = new Vector<Double>();
 		for(String value : values) {
@@ -155,7 +251,22 @@ public class ColorModel implements Model  {
 		if(result!=null)
 			toReturn+=" "+double2string(result.getComponents());
 		return toReturn;
-			
+
+	}
+
+	@Override
+	public Vector<String> limits(boolean isLeft) {
+		if(isLeft)
+			return left.getLimits();
+		else 
+		{
+			if(rightType.equals("intero")) {
+				Vector<String> toReturn = new Vector<String>(Arrays.asList(intLimit));
+				return toReturn;
+			}else if(!rightType.equals("non disponibile"))
+				return right.getLimits();
+		}
+		return new Vector<String>();
 	}
 
 }

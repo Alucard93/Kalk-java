@@ -68,7 +68,7 @@ public class CYMK extends CIExyz {
 		Double m=((_m-_k)/(1-_k))*100;
 		Double y=((_y-_k)/(1-_k))*100;
 		if((c>upper_limit_cymk || y>upper_limit_cymk || m>upper_limit_cymk || k>upper_limit_cymk))
-			throw new IllegalColorException("il colore non rientra nei parametri");
+			throw new IllegalColorException(getRepresentation()+": valori non accettabili");
 		else{
 			cyan=c.intValue();
 			yellow=y.intValue();
@@ -86,11 +86,11 @@ public class CYMK extends CIExyz {
 	}
 
 	/**
-	 * @brief getRappresentation
+	 * @brief getRepresentation
 	 * @return String that contains the meaning of the values contained in
 	 *         getComponents()
 	 */
-	public String getRappresentation() {
+	public String getRepresentation() {
 		return new String("CYMK");
 	}
 
@@ -123,8 +123,9 @@ public class CYMK extends CIExyz {
 	 * @throws IllegalColorException
 	 */
 	public static CIExyz getCIE(int c, int y, int m, int k) throws IllegalColorException {
+		CYMK tmp = new CYMK();
 		if ((c > upper_limit_cymk || y > upper_limit_cymk || m > upper_limit_cymk || k > upper_limit_cymk))
-			throw new IllegalColorException("il colore non rientra nei parametri");
+			throw new IllegalColorException(tmp.getRepresentation()+": valori non accettabili");
 		else {
 			Double tx = 0.41245 * ((1 - k / 100) * (1 - c / 100)) + 0.35757 * ((1 - k / 100) * (1 - m / 100))
 					+ 0.18043 * ((1 - k / 100) * (1 - y / 100));
@@ -178,6 +179,19 @@ public class CYMK extends CIExyz {
 
 	public Color getNewIstance() {
 		return new CYMK();
+	}
+
+	public Vector<String> getLimits() {
+		String[] limits = {"Cyan",String.valueOf(upper_limit_cymk),String.valueOf(upper_limit_cymk),
+				"Yellow",String.valueOf(upper_limit_cymk),String.valueOf(upper_limit_cymk),
+				"Magente",String.valueOf(upper_limit_cymk),String.valueOf(upper_limit_cymk),
+				"Key Black",String.valueOf(upper_limit_cymk),String.valueOf(upper_limit_cymk),};
+		Vector<String> toReturn = new Vector<String>(Arrays.asList(limits));
+		return toReturn;
+	}
+	
+	public Color getNewIstance(Color color) throws IllegalColorException {
+		return new CYMK(color);
 	}
 
 }

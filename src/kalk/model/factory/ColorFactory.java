@@ -4,9 +4,7 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.HashMap;
 import kalk.model.IllegalColorException;
-import kalk.model.color.CIExyz;
-import kalk.model.color.Color;
-import kalk.model.color.RGB;
+import kalk.model.color.*;
 
 /**
  * @author gian
@@ -17,8 +15,11 @@ public class ColorFactory
 	private static Map<String, Color> allColorFactories = new HashMap<String,Color>();
 
 	public static void setFactoryReady() {
-		CIExyz ciexyz = new CIExyz();
-		RGB rgb = new RGB();
+		new CIExyz();
+		new CYMK();
+		new HSL();
+		new RGB();
+		new YUV();
 	}
 
 	public static boolean addColorFactory(String name,Color color)
@@ -70,6 +71,11 @@ public class ColorFactory
 	public static Color getNewColor(String key)
 	{
 		return allColorFactories.get(key).getNewIstance();
+	}
+	
+	public static Color getNewColor(String key, Color color) throws IllegalColorException
+	{
+		return allColorFactories.get(key).getNewIstance(color);
 	}
 
 	public static Vector<String> permittedOperations(String type)

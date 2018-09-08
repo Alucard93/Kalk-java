@@ -3,7 +3,7 @@
 * @date 20/7/2018
 * @class YUV
 * @brief this class uses as base class RGB
-* and stores a color in YUV rappresentation
+* and stores a color in YUV Representation
 */
 
 package kalk.model.color;
@@ -21,7 +21,7 @@ public class YUV extends RGB{
     private double u;
     private double v;
     @SuppressWarnings("unused")
-	private static final boolean factory = ColorFactory.addColorFactory("RGB", new YUV());
+	private static final boolean factory = ColorFactory.addColorFactory("YUV", new YUV());
 // static variables
     static final double low_y = 0.0;
     static final double max_y = 1.0;
@@ -49,7 +49,7 @@ public class YUV extends RGB{
     Double tu= -0.147*xyz.elementAt(0)-0.289*xyz.elementAt(1)+0.436*xyz.elementAt(2);
     Double tv= 0.615*xyz.elementAt(0)-0.515*xyz.elementAt(1)-0.100*xyz.elementAt(2);
     if(tu>max_uv || tv>max_uv || tu<low_uv || tv<low_uv || ty>max_y ||ty<low_y){
-        throw new IllegalColorException("il colore non rientra nei parametri");
+    	throw new IllegalColorException(getRepresentation()+": valori non accettabili");
     }else{
         y=ty;
         u=tu;
@@ -65,10 +65,10 @@ public class YUV extends RGB{
   }
 
   /**
-   * @brief YUV::getRappresentation
+   * @brief YUV::getRepresentation
    * @return QString that contains the meaning of the values contained in getComponents()
    */
-  public String getRappresentation(){
+  public String getRepresentation(){
       return new String("YUV");
   }
 
@@ -167,4 +167,41 @@ public void setComponents(Vector<Double> componets) throws IllegalColorException
  public Color getNewIstance() {
 	  return new YUV();
  }
+ public Vector<String> getLimits() {
+		String[] limits = {"Y",String.valueOf(low_y),String.valueOf(max_y),
+				"U",String.valueOf(low_uv),String.valueOf(max_uv),
+				"V",String.valueOf(low_uv),String.valueOf(max_uv)};
+		Vector<String> toReturn = new Vector<String>(Arrays.asList(limits));
+		return toReturn;
+	}
+ 
+public Vector<Double> YUV2RGB(Vector<Double> components) throws IllegalColorException{
+	    Vector<Double> rgbrap = new Vector<Double>();
+	    rgbrap.add(0,(components.elementAt(2)+0.877*components.elementAt(0))/0.877);
+	    rgbrap.add(2,(components.elementAt(1)+0.493*components.elementAt(0))/0.493);
+	    rgbrap.add(1,(-rgbrap.elementAt(0)*0.299-rgbrap.elementAt(2)*0.144+components.elementAt(0))/0.587);
+	    for(int i=0; i<3; i++)
+	    {
+	        if(rgbrap.elementAt(i)>1)
+	            throw new IllegalColorException(getRepresentation()+": il colore immesso non rientra nello spazio colore YUV");
+	        rgbrap.setElementAt(rgbrap.elementAt(i)*255, i);
+	    }
+	    return rgbrap;
+	}
+
+
+	public Vector<Double> RGB2YUV(Vector<Double> components) throws IllegalColorException{
+	    Vector<Double> yuvrap = new Vector<Double>();
+	    yuvrap.add(0.299*((components.elementAt(0)/255.0)+0.587*(components.elementAt(1)/255.0)+0.114*(components.elementAt(2)/255.0)));
+	    yuvrap.add(0.493*((components.elementAt(2)/255.0)-yuvrap.elementAt(0)));
+	    yuvrap.add(0.877*((components.elementAt(0)/255.0)-yuvrap.elementAt(0)));
+	    if(yuvrap.elementAt(1)>max_uv || yuvrap.elementAt(2)>max_uv || yuvrap.elementAt(1)<low_uv || yuvrap.elementAt(2)<low_uv || yuvrap.elementAt(0)>max_y ||yuvrap.elementAt(0)<low_y)
+	    	throw new IllegalColorException(getRepresentation()+": il colore immesso non rientra nello spazio colore YUV");
+	    return yuvrap;
+	}
+	
+	public Color getNewIstance(Color color) throws IllegalColorException {
+		return new YUV(color);
+	}
+	    
 };

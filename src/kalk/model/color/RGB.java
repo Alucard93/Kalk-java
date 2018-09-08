@@ -57,10 +57,14 @@ public class RGB extends CIExyz
 
 	public RGB(int t_r, int t_g, int t_b) throws IllegalColorException
 	{
+		super();
 		if(t_r>upper_limit || t_r<lower_limit ||
 				t_g>upper_limit || t_g<lower_limit ||
 				t_b>upper_limit || t_b<lower_limit)
-			throw new IllegalColorException("values out of boundaries");
+			throw new IllegalColorException(getRepresentation()+": valori non accettabili");
+		Double[] toSet = {(double)t_r,(double)t_g,(double)t_b};
+		Vector<Double> toConv= new Vector<Double>(Arrays.asList(toSet)); 
+		super.setComponents(rgb2CieXyz(toConv));
 		sRGB[0]=t_r;
 		sRGB[1]=t_g;
 		sRGB[2]=t_b;
@@ -91,7 +95,7 @@ public class RGB extends CIExyz
 		if(componets.elementAt(0)<lower_limit || componets.elementAt(0)>upper_limit ||
 				componets.elementAt(1)<lower_limit || componets.elementAt(1)>upper_limit ||
 				componets.elementAt(2)<lower_limit || componets.elementAt(2)>upper_limit)
-			throw new IllegalColorException("values out of boundaries");
+			throw new IllegalColorException(getRepresentation()+": valori non accettabili");
 		sRGB[0]=(componets.elementAt(0).intValue());
 		sRGB[1]=(componets.elementAt(1).intValue());
 		sRGB[2]=(componets.elementAt(2).intValue());
@@ -166,7 +170,7 @@ public class RGB extends CIExyz
 
 	//PRIVATE METHODS
 
-	private Vector<Double> CieXyz2rgb(Vector<Double> components)
+	private static Vector<Double> CieXyz2rgb(Vector<Double> components) throws IllegalColorException
 	{
 		Vector<Double> RGBrap = new Vector<Double>(3);
 		for(int i=0; i<3; i++)
@@ -178,14 +182,16 @@ public class RGB extends CIExyz
 				toSet+=(CIE_RGB[i][j]*tomultiply);
 			}
 			RGBrap.add(toSet*255);
-			if(RGBrap.lastElement()>255)
-				RGBrap.setElementAt((double) 255,RGBrap.size()-1);
+			if(RGBrap.lastElement()>255) {
+				RGB tmp = new RGB();
+				throw new IllegalColorException(tmp.getRepresentation()+": il colore immesso non rientra nello spazio colore RGB ");
+			}
 		}
 		
 		return RGBrap;
 	}
 
-	private Vector<Double> rgb2CieXyz(Vector<Double> components)
+	private static Vector<Double> rgb2CieXyz(Vector<Double> components)
 	{
 
 		Vector<Double> cierap = new Vector<Double>(3);
@@ -202,4 +208,15 @@ public class RGB extends CIExyz
 		return cierap;
 	}
 	
+	public Vector<String> getLimits() {
+		String[] limits = {"Red",String.valueOf(lower_limit),String.valueOf(upper_limit),
+				"Green",String.valueOf(lower_limit),String.valueOf(upper_limit),
+				"Blue",String.valueOf(lower_limit),String.valueOf(upper_limit)};
+		Vector<String> toReturn = new Vector<String>(Arrays.asList(limits));
+		return toReturn;
+	}
+	
+	public Color getNewIstance(Color color) throws IllegalColorException {
+		return new RGB(color);
+	}
 }
