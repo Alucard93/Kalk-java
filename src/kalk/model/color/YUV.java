@@ -35,7 +35,7 @@ public class YUV extends RGB{
     v=0;
   }
 
-  public YUV(double _y, double _u, double _v){
+  public YUV(double _y, double _u, double _v) throws IllegalColorException{
     super(getCIE(_y, _u, _v));
     y=_y;
     u=_u;
@@ -114,11 +114,12 @@ public class YUV extends RGB{
  * @return Color pointer with a clone of *this in the CIExyz format
  * @throws IllegalColorException 
  */
- public Color getCIE(double y, double u, double v) throws IllegalColorException{
+ public static Color getCIE(double y, double u, double v) throws IllegalColorException{
     int r= (int)(y + 1.140*v);
     int g= (int)(y - 0.395*u - 0.581*v);
     int b= (int)(y + 2.032*u);
-    return super.getCIE(r, g, b);
+    RGB rgb = new RGB(r,g,b);
+    return rgb.getCIE();
   }
 
   /**

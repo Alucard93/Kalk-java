@@ -37,7 +37,7 @@ public class HSL extends CIExyz{
       lightness=0.0;
   }
 
-  public HSL(Double h, Double s, Double l){
+  public HSL(Double h, Double s, Double l) throws IllegalColorException{
     super(getCIE(h, s, l));
     hue=h;
     saturation=s;
@@ -134,7 +134,7 @@ public class HSL extends CIExyz{
   * @param l
   * @return Color pointer with a clone of *this
   */
-  public CIExyz getCIE(Double h, Double s, Double l) throws IllegalColorException{
+  public static CIExyz getCIE(Double h, Double s, Double l) throws IllegalColorException{
     if((h>upper_limit_hue || s>upper_limit_sat_lig || l>upper_limit_sat_lig) ||
        (h<lower_limit_hue || s<lower_limit_sat_lig || l<lower_limit_sat_lig))
         throw new IllegalColorException("il colore non rientra nei parametri");
@@ -157,6 +157,9 @@ public class HSL extends CIExyz{
             ty=0.222015 * hsl_value(t1,t2,h+120) + 0.706655 * hsl_value(t1,t2,h) + 0.071330 * hsl_value(t1,t2,h-120);
             tz=0.020183 * hsl_value(t1,t2,h+120) + 0.129553 * hsl_value(t1,t2,h) + 0.939180 * hsl_value(t1,t2,h-120);
         }
+        tx = ((int)(tx*1000))/1000.0;
+        ty = ((int)(ty*1000))/1000.0;
+        tz = ((int)(tz*1000))/1000.0;
         return new CIExyz(tx, ty, tz);
     }
   }
@@ -198,6 +201,9 @@ public class HSL extends CIExyz{
         hue=componets.elementAt(0);
         saturation=componets.elementAt(1);
         lightness=componets.elementAt(2);
+        tcie.setElementAt(((int)(tcie.elementAt(0)*1000))/1000.0, 0);
+        tcie.setElementAt(((int)(tcie.elementAt(1)*1000))/1000.0, 1);
+        tcie.setElementAt(((int)(tcie.elementAt(2)*1000))/1000.0, 2);
         super.setComponents(tcie);
     }
   }
@@ -217,7 +223,7 @@ public class HSL extends CIExyz{
   * @param t3
   * @return Double that rappresent the hue in module
   */
-  private Double hsl_value(Double t1, Double t2, Double h){
+  private static Double hsl_value(Double t1, Double t2, Double h){
     if(h>upper_limit_hue)
         h-=upper_limit_hue;
     if(h<lower_limit_hue)
