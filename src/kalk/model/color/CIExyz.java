@@ -26,7 +26,7 @@ public class CIExyz implements Color
 	protected static final int componets=3;
 	protected static final String[] implementedMethods=new String[]{"negate","mix"};
 
-	//Costructor
+	//Constructor
 	public CIExyz(double t_x, double t_y, double t_z) throws IllegalColorException
 	{
 		if(t_x<lower_limit_X || t_x>upper_limit_X ||
@@ -68,7 +68,7 @@ public class CIExyz implements Color
 
 	/**
 	 * @brief getNumberOfComponets
-	 * @return int componets number
+	 * @return int components number
 	 */
 	public int getNumberOfComponets()
 	{

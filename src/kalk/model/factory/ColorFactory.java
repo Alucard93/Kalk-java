@@ -7,7 +7,7 @@ import kalk.model.IllegalColorException;
 import kalk.model.color.*;
 
 /**
- * @author gian
+ * @author Gianmarco Pettinato
  *
  */
 public class ColorFactory

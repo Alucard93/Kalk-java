@@ -54,8 +54,8 @@ public class CYMK extends CIExyz {
 		Double _g=-0.969245*xyz.elementAt(0) +1.875968*xyz.elementAt(1) +0.041555*xyz.elementAt(2);
 		Double _b=0.067872*xyz.elementAt(0) -0.228833*xyz.elementAt(1) +1.069251*xyz.elementAt(2);
 		Double _c=1-_r;
-		Double _y=1-_g;
-		Double _m=1-_b;
+		Double _m=1-_g;
+		Double _y=1-_b;
 		Double _k=_c;
 		if(_r.compareTo(_g)<0)
 			_k=_g;
@@ -96,11 +96,11 @@ public class CYMK extends CIExyz {
 
 	/**
 	 * @brief negate
-	 * @return Color pointer with a new color with the complementar values
+	 * @return Color pointer with a new color with the negate values
 	 * @throws IllegalColorException 
 	 */
 	public Color negate() throws IllegalColorException {
-		return new CYMK(super.negate());
+		return new CYMK(upper_limit_cymk-cyan, upper_limit_cymk-yellow, upper_limit_cymk-magenta, key_black);
 	}
 
 	/**

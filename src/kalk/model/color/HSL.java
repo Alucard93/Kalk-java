@@ -111,11 +111,14 @@ public class HSL extends CIExyz{
 
   /**
   * @brief negate
-  * @return Color pointer with a new color with the complementar values
+  * @return Color pointer with a new color with the negate values
  * @throws IllegalColorException 
   */
   public HSL negate() throws IllegalColorException{
-    return new HSL(super.negate());
+	  double h = hue+(upper_limit_hue/2);
+	  if(h>upper_limit_hue)
+		  h-=upper_limit_hue;
+    return new HSL(h, saturation, lightness);
   }
 
   /**
@@ -212,7 +215,7 @@ public class HSL extends CIExyz{
 
   /**
   * @brief getNumberOfComponets
-  * @return int componets number
+  * @return int components number
   */
   public int getNumberOfComponets(){
     return componets;
@@ -223,7 +226,7 @@ public class HSL extends CIExyz{
   * @param t1
   * @param t2
   * @param t3
-  * @return Double that rappresent the hue in module
+  * @return Double that represent the hue in module
   */
   private static Double hsl_value(Double t1, Double t2, Double h){
     if(h>=upper_limit_hue)
