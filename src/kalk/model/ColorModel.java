@@ -76,7 +76,7 @@ public class ColorModel implements Model  {
 		int size = localHistory.size();
 		Vector<String> history = new Vector<String>(localHistory.size());
 		for(ColorModel model:localHistory) {
-			history.add("operazione n."+String.valueOf(size)+'\n'+model.toString());
+			history.add('\n'+"operazione n."+String.valueOf(size)+'\n'+model.toString());
 			size--;
 		}			
 		return history;
@@ -247,8 +247,10 @@ public class ColorModel implements Model  {
 				toReturn+=" "+String.valueOf(alternativeRight);
 			}
 		}
-		if(result!=null)
+		if(result!=null) {
+			toReturn+=" "+resultType;
 			toReturn+=" "+double2string(result.getComponents());
+			}
 		return toReturn;
 
 	}
