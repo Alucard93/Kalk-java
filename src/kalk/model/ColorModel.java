@@ -63,7 +63,7 @@ public class ColorModel implements Model  {
 	public void execute() throws IllegalColorException, CloneNotSupportedException {
 		Color tmp = null;
 		if(ok) {
-			if(rightType.equals("intero"))
+			if(rightType==("intero"))
 				result = ColorFactory.Execution(left, operation, alternativeRight);
 			else
 				result = ColorFactory.Execution(left, operation, right);
@@ -175,7 +175,6 @@ public class ColorModel implements Model  {
 	public void setLeftValues(Vector<String> values)
 	{
 		Vector<Double> toSet = string2double(values);
-		System.out.println(values+" "+toSet);
 		try {
 			left.setComponents(toSet);
 		} catch (IllegalColorException e) {
@@ -195,7 +194,7 @@ public class ColorModel implements Model  {
 		int size = 1 ;
 		if(right!=null)
 			right=null;
-		if(!type.equals("intero"))
+		if(type!="intero")
 		{
 			right=ColorFactory.getNewColor(type);
 			size = right.getNumberOfComponets();
@@ -244,7 +243,7 @@ public class ColorModel implements Model  {
 			if(right!=null && rightType!="intero") {
 				toReturn+=" "+double2string(right.getComponents());
 			}
-			if(rightType.equals("intero")) {
+			if(rightType==("intero")) {
 				toReturn+=" "+String.valueOf(alternativeRight);
 			}
 		}
@@ -260,10 +259,10 @@ public class ColorModel implements Model  {
 			return left.getLimits();
 		else 
 		{
-			if(rightType.equals("intero")) {
+			if(rightType=="intero") {
 				Vector<String> toReturn = new Vector<String>(Arrays.asList(intLimit));
 				return toReturn;
-			}else if(!rightType.equals("non disponibile"))
+			}else if(rightType!="non disponibile")
 				return right.getLimits();
 		}
 		return new Vector<String>();

@@ -163,6 +163,14 @@ public class RGB extends CIExyz {
 				double tomultiply = components.elementAt(j);
 				toSet += (((int) ((CIE_RGB[i][j] * tomultiply) * 1000)) / 1000.0);
 			}
+			//Nomarlizzazione
+			   toSet = Math.abs(toSet);
+	        if(toSet<=0.0031308){
+	        	toSet = toSet*12.92;
+	        }else{
+	        	toSet = ((Math.pow(toSet,(1/2.4))*1.055)-0.055);
+	        }
+	        //Normalizzazione
 			RGBrap.add(toSet * 255);
 			if (RGBrap.lastElement() > 255) {
 				RGB tmp = new RGB();

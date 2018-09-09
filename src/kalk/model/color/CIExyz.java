@@ -54,8 +54,6 @@ public class CIExyz implements Color
 	public CIExyz(Color color) throws IllegalColorException
 	{
 		CIExyz c = (CIExyz)color.getCIE();
-		if(!this.getRepresentation().equals(c.getRepresentation()))
-			throw new IllegalColorException(this.getRepresentation()+": colore non accettabile");
 		x=c.x;
 		y=c.y;
 		z=c.z;
